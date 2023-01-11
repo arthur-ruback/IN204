@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/arthur/Documents/IN204/source/client.cpp
+SFML/Graphics.hpp
+-
+SFML/Network.hpp
+-
+string
+-
+iostream
+-
+common.hpp
+/home/arthur/Documents/IN204/source/common.hpp
+
+/home/arthur/Documents/IN204/source/common.hpp
+SFML/Network.hpp
+-
+string
+-
+iostream
+-
+

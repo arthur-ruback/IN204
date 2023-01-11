@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/Server.dir/source/server.cpp.o  -o Server -lsfml-system -lsfml-graphics -lsfml-window -lsfml-network 
