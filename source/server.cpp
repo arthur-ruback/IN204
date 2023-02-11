@@ -42,15 +42,15 @@ int main(){
             else
             {
                 // The listener socket is not ready, test all other sockets (the clients)
-                for (auto it : clients)
+                for (auto client = clients.begin(); client != clients.end(); client++)
                 {
-                    sf::TcpSocket& client = *it;
-                    if (selector.isReady(client))
+                    //sf::TcpSocket* client = it;
+                    if (selector.isReady(*(*client)))
                     {
                         // The client has sent some data, we can receive it
                         sf::Packet packet;
                         Message toRead;
-                        unsigned status = client.receive(packet);
+                        unsigned status = (*client)->receive(packet);
                         if (status == sf::Socket::Done)
                         {
                             if(packet >> toRead){
@@ -63,14 +63,11 @@ int main(){
                         }
                         else if (status == sf::Socket::Disconnected)
                         {
-                            std::cout << "Disconnecting from " << client.getRemoteAddress() << std::endl;
-                            std::cout << "Disconnecting from " << client.getRemoteAddress() << std::endl;
-                            std::cout << "D" << std::endl;
-                            clients.remove(&client);
-                            std::cout << "D" << std::endl;
-                            selector.remove(*it);
-                            delete &client;
-                            std::cout << "D" << std::endl;
+                            std::cout << "Disconnecting from " << (*client)->getRemoteAddress() << std::endl;
+                            selector.remove(**client);
+                            delete *client;
+                            client = clients.erase(client);
+                            client--;   // since erase returns next element and loop also does this, needs to go back 1
                         }
                     }
                 }

@@ -1,4 +1,4 @@
-/home/arthur/Documents/IN204/CMakeFiles/rebuild_cache.dir
 /home/arthur/Documents/IN204/CMakeFiles/Client.dir
-/home/arthur/Documents/IN204/CMakeFiles/edit_cache.dir
 /home/arthur/Documents/IN204/CMakeFiles/Server.dir
+/home/arthur/Documents/IN204/CMakeFiles/edit_cache.dir
+/home/arthur/Documents/IN204/CMakeFiles/rebuild_cache.dir

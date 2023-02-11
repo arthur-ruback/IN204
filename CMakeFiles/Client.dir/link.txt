@@ -1,1 +1,1 @@
-/usr/bin/c++     CMakeFiles/Client.dir/source/client.cpp.o  -o Client -lsfml-system -lsfml-graphics -lsfml-window -lsfml-network 
+/usr/bin/c++ CMakeFiles/Client.dir/source/client.cpp.o -o Client  -lsfml-system -lsfml-graphics -lsfml-window -lsfml-network 
