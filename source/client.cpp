@@ -7,6 +7,8 @@
 
 int main()
 {
+    sf::Packet toSend, toRecv;
+    Message sendMsg, recvMsg;
     sf::TcpSocket socket;
     sf::Socket::Status status = socket.connect("127.0.0.1", 53000);
     if (status != sf::Socket::Done)
@@ -14,24 +16,43 @@ int main()
          std::cerr << "Falha na connexão" << std::endl;
     }
 
-    unsigned myID = 0;
-    std::cout << "Who am I? (My ID plz)" << std::endl;
-    std::cin >> myID;
+    unsigned myID = SERVER_ID;
+    while(myID == SERVER_ID){
+        std::cout << "Who am I? (My ID plz)" << std::endl;
+        std::cin >> myID;
+        if (myID == SERVER_ID){
+            std::cout << "Sorry, it cannot be 0 :(" << std::endl;
+        }
+    }
+
+    // Server handshake
+    Message authMsg = {MSG_CONX_REQ, myID, SERVER_ID, std::string("0")};
+    toSend << authMsg;
+    std::cout << "Sending: " << authMsg << std::endl;
+    socket.send(toSend);
+
+    socket.receive(toRecv);
+    toRecv >> recvMsg;
+    std::cout << "Recieved: " << recvMsg << std::endl;
+    if (recvMsg.sender != 0 || recvMsg.msgType != MSG_CONX_REP || recvMsg.dest != myID || recvMsg.content.compare("Aprooved")){
+        std::cout << "Connection refused by server" << std::endl;
+        return 0;
+    }   
 
     while (1)
     {
-        Message teste;
-        teste.sender = myID;
+        sendMsg.msgType = MSG_STD;
+        sendMsg.sender = myID;
         
         std::cout << "to who?" << std::endl;
-        std::cin >> teste.dest;
+        std::cin >> sendMsg.dest;
 
         std::cout << "type to send:" << std::endl;
-        std::cin >> teste.content;
-
-        sf::Packet toSend;
-        toSend << teste;
-        std::cout << teste << std::endl;
+        std::cin >> sendMsg.content;
+        
+        toSend.clear();
+        toSend << sendMsg;
+        std::cout << sendMsg << std::endl;
         socket.send(toSend);
     }
     
