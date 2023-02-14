@@ -63,7 +63,8 @@ CMAKE_BINARY_DIR = /home/arthur/Documents/IN204
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/Client.dir/all
+all: CMakeFiles/Client_sender.dir/all
+all: CMakeFiles/Client_receiver.dir/all
 all: CMakeFiles/Server.dir/all
 .PHONY : all
 
@@ -72,35 +73,62 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/Client.dir/clean
+clean: CMakeFiles/Client_sender.dir/clean
+clean: CMakeFiles/Client_receiver.dir/clean
 clean: CMakeFiles/Server.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/Client.dir
+# Target rules for target CMakeFiles/Client_sender.dir
 
 # All Build rule for target.
-CMakeFiles/Client.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client.dir/build.make CMakeFiles/Client.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client.dir/build.make CMakeFiles/Client.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/arthur/Documents/IN204/CMakeFiles --progress-num=1,2 "Built target Client"
-.PHONY : CMakeFiles/Client.dir/all
+CMakeFiles/Client_sender.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client_sender.dir/build.make CMakeFiles/Client_sender.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client_sender.dir/build.make CMakeFiles/Client_sender.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/arthur/Documents/IN204/CMakeFiles --progress-num=3,4 "Built target Client_sender"
+.PHONY : CMakeFiles/Client_sender.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/Client.dir/rule: cmake_check_build_system
+CMakeFiles/Client_sender.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/arthur/Documents/IN204/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/Client.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/Client_sender.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/arthur/Documents/IN204/CMakeFiles 0
-.PHONY : CMakeFiles/Client.dir/rule
+.PHONY : CMakeFiles/Client_sender.dir/rule
 
 # Convenience name for target.
-Client: CMakeFiles/Client.dir/rule
-.PHONY : Client
+Client_sender: CMakeFiles/Client_sender.dir/rule
+.PHONY : Client_sender
 
 # clean rule for target.
-CMakeFiles/Client.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client.dir/build.make CMakeFiles/Client.dir/clean
-.PHONY : CMakeFiles/Client.dir/clean
+CMakeFiles/Client_sender.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client_sender.dir/build.make CMakeFiles/Client_sender.dir/clean
+.PHONY : CMakeFiles/Client_sender.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/Client_receiver.dir
+
+# All Build rule for target.
+CMakeFiles/Client_receiver.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client_receiver.dir/build.make CMakeFiles/Client_receiver.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client_receiver.dir/build.make CMakeFiles/Client_receiver.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/arthur/Documents/IN204/CMakeFiles --progress-num=1,2 "Built target Client_receiver"
+.PHONY : CMakeFiles/Client_receiver.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/Client_receiver.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/arthur/Documents/IN204/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/Client_receiver.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/arthur/Documents/IN204/CMakeFiles 0
+.PHONY : CMakeFiles/Client_receiver.dir/rule
+
+# Convenience name for target.
+Client_receiver: CMakeFiles/Client_receiver.dir/rule
+.PHONY : Client_receiver
+
+# clean rule for target.
+CMakeFiles/Client_receiver.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client_receiver.dir/build.make CMakeFiles/Client_receiver.dir/clean
+.PHONY : CMakeFiles/Client_receiver.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/Server.dir
@@ -109,7 +137,7 @@ CMakeFiles/Client.dir/clean:
 CMakeFiles/Server.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Server.dir/build.make CMakeFiles/Server.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Server.dir/build.make CMakeFiles/Server.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/arthur/Documents/IN204/CMakeFiles --progress-num=3,4 "Built target Server"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/arthur/Documents/IN204/CMakeFiles --progress-num=5,6 "Built target Server"
 .PHONY : CMakeFiles/Server.dir/all
 
 # Build rule for subdir invocation for target.

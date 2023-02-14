@@ -3,14 +3,18 @@ cmake_minimum_required(VERSION 3.10)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-project(IN204_Messenger VERSION 0.1)
+project(IN204_Messenger VERSION 0.2)
 
 
-add_executable(Client source/client.cpp)
+add_executable(Client_sender source/client_sender.cpp)
+
+add_executable(Client_receiver source/client_receiver.cpp)
 
 add_executable(Server source/server.cpp)
 
-target_link_libraries(Client sfml-system sfml-graphics sfml-window sfml-network)
+target_link_libraries(Client_sender sfml-system sfml-graphics sfml-window sfml-network)
+
+target_link_libraries(Client_receiver sfml-system sfml-graphics sfml-window sfml-network)
 
 target_link_libraries(Server sfml-system sfml-graphics sfml-window sfml-network)
 

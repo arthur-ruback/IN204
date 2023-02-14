@@ -10,6 +10,8 @@
 #define MSG_CONX_REP 2
 #define MSG_LINK_REQ 3
 #define MSG_LINK_REP 4
+#define MSG_ERROR    5
+#define MSG_OK       6
 
 #define EMITTER 0
 #define RECIEVER 1

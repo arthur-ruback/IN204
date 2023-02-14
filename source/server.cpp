@@ -4,12 +4,26 @@
 #include <map>
 #include "common.hpp"
 
+bool existsClientId(std::list<ClientData> &clients, int id){
+    for (auto client: clients){
+        if(client.id == id)
+            return 1;
+    }
+    return 0;
+}
 
+ClientData* findClientById(std::list<ClientData> &clients, int id){
+    for (auto & client: clients){
+        if(client.id == id)
+            return &client;
+    }
+    return NULL;
+}
 
 int main(){
     sf::TcpListener listener;
 
-    if (listener.listen(53000) != sf::Socket::Done)
+    if (listener.listen(53001) != sf::Socket::Done)
     {
         std::cerr << "Failed in binding to port" << std::endl;
         return -1;
@@ -65,22 +79,81 @@ int main(){
                                 // Demanding connexion
                                 if(toRead.msgType == MSG_CONX_REQ){
 
-                                    // TODO: Authenticate
-                                    (*client).id = toRead.sender;
-                                    int aux = 0;
-                                    (*client).type = std::stoi(toRead.content);
+                                    if(existsClientId(clients,toRead.sender)){
+                                        // client claiming to be someone else
+                                        std::cout << "Disconnecting from repeated id client: " << ((*client).socket)->getRemoteAddress() << std::endl;
+                                        selector.remove(*((*client).socket));
+                                        delete (*client).socket;
+                                        client = clients.erase(client);
+                                        client--;
+                                    }else{
 
-                                    toSend.msgType = MSG_CONX_REP;
+                                        // TODO: Authenticate
+                                        (*client).id = toRead.sender;
+                                        int aux = 0;
+                                        (*client).type = std::stoi(toRead.content);
+
+                                    
+
+                                        toSend.msgType = MSG_CONX_REP;
+                                        toSend.sender = SERVER_ID;
+                                        toSend.dest = (*client).id;
+                                        toSend.content = std::string("Aproved");
+                                        packet.clear();
+                                        packet << toSend;
+
+                                        ((*client).socket)->send(packet);
+                                        std::cout << "Admited " << (*client).id << " as " << (((*client).type)? "reciever" : "emitter") << std::endl;
+                                    }
+                                }else if(toRead.msgType == MSG_STD){
+                                    ClientData *clientData = findClientById(clients,toRead.dest);
+                                    if(clientData == NULL){
+                                        // destination not registered, return error to sender
+                                        toSend.msgType = MSG_ERROR;
+                                        toSend.sender = SERVER_ID;
+                                        toSend.dest = (*client).id;
+                                        toSend.content = std::string("Destination not registered in database");
+                                        packet.clear();
+                                        packet << toSend;
+                                        ((*client).socket)->send(packet);
+                                        std::cout << "Client " << toRead.dest << " not registered in database" << std::endl;
+                                    }else if(((*clientData).type == EMITTER) && (*clientData).link == 0){
+                                        // destination not adequate to recv data, return error to sender
+                                        toSend.msgType = MSG_ERROR;
+                                        toSend.sender = SERVER_ID;
+                                        toSend.dest = (*client).id;
+                                        toSend.content = std::string("Destination is a emitter and is not linked to any receiver");
+                                        packet.clear();
+                                        packet << toSend;
+                                        ((*client).socket)->send(packet);
+                                        std::cout << "Client " << toRead.dest << " is not a reciever nor is linked to one" << std::endl;
+                                    }else{
+                                        // redirecting through link or normal relay
+                                        if ((*clientData).link != 0)
+                                            clientData = findClientById(clients,(*clientData).link);
+                                        (*clientData).socket->send(packet);
+                                        std::cout << "Relaying msg to " << toRead.dest << std::endl;
+                                        toSend.msgType = MSG_OK;
+                                        toSend.sender = SERVER_ID;
+                                        toSend.dest = (*client).id;
+                                        toSend.content = std::string();
+                                        packet.clear();
+                                        packet << toSend;
+                                        ((*client).socket)->send(packet);
+                                    }
+                                // try to link to another client
+                                }else if(toRead.msgType == MSG_LINK_REQ){
+                                    (*client).link = std::stoi(toRead.content);
+                                    std::cout << "Linked " << (*client).id << " and " << (*client).link << std::endl;
+                                    toSend.msgType = MSG_OK;
                                     toSend.sender = SERVER_ID;
                                     toSend.dest = (*client).id;
-                                    toSend.content = std::string("Aprooved");
+                                    toSend.content = std::string();
                                     packet.clear();
                                     packet << toSend;
-
                                     ((*client).socket)->send(packet);
-
+                            
                                 }
-                                
                             }
                             else{
                                 std::cerr << "ERROR EXTRACTING" << std::endl;

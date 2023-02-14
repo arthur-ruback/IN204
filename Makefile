@@ -117,17 +117,30 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named Client
+# Target rules for targets named Client_sender
 
 # Build rule for target.
-Client: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Client
-.PHONY : Client
+Client_sender: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Client_sender
+.PHONY : Client_sender
 
 # fast build rule for target.
-Client/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client.dir/build.make CMakeFiles/Client.dir/build
-.PHONY : Client/fast
+Client_sender/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client_sender.dir/build.make CMakeFiles/Client_sender.dir/build
+.PHONY : Client_sender/fast
+
+#=============================================================================
+# Target rules for targets named Client_receiver
+
+# Build rule for target.
+Client_receiver: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Client_receiver
+.PHONY : Client_receiver
+
+# fast build rule for target.
+Client_receiver/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client_receiver.dir/build.make CMakeFiles/Client_receiver.dir/build
+.PHONY : Client_receiver/fast
 
 #=============================================================================
 # Target rules for targets named Server
@@ -142,29 +155,53 @@ Server/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Server.dir/build.make CMakeFiles/Server.dir/build
 .PHONY : Server/fast
 
-source/client.o: source/client.cpp.o
-.PHONY : source/client.o
+source/client_receiver.o: source/client_receiver.cpp.o
+.PHONY : source/client_receiver.o
 
 # target to build an object file
-source/client.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client.dir/build.make CMakeFiles/Client.dir/source/client.cpp.o
-.PHONY : source/client.cpp.o
+source/client_receiver.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client_receiver.dir/build.make CMakeFiles/Client_receiver.dir/source/client_receiver.cpp.o
+.PHONY : source/client_receiver.cpp.o
 
-source/client.i: source/client.cpp.i
-.PHONY : source/client.i
+source/client_receiver.i: source/client_receiver.cpp.i
+.PHONY : source/client_receiver.i
 
 # target to preprocess a source file
-source/client.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client.dir/build.make CMakeFiles/Client.dir/source/client.cpp.i
-.PHONY : source/client.cpp.i
+source/client_receiver.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client_receiver.dir/build.make CMakeFiles/Client_receiver.dir/source/client_receiver.cpp.i
+.PHONY : source/client_receiver.cpp.i
 
-source/client.s: source/client.cpp.s
-.PHONY : source/client.s
+source/client_receiver.s: source/client_receiver.cpp.s
+.PHONY : source/client_receiver.s
 
 # target to generate assembly for a file
-source/client.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client.dir/build.make CMakeFiles/Client.dir/source/client.cpp.s
-.PHONY : source/client.cpp.s
+source/client_receiver.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client_receiver.dir/build.make CMakeFiles/Client_receiver.dir/source/client_receiver.cpp.s
+.PHONY : source/client_receiver.cpp.s
+
+source/client_sender.o: source/client_sender.cpp.o
+.PHONY : source/client_sender.o
+
+# target to build an object file
+source/client_sender.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client_sender.dir/build.make CMakeFiles/Client_sender.dir/source/client_sender.cpp.o
+.PHONY : source/client_sender.cpp.o
+
+source/client_sender.i: source/client_sender.cpp.i
+.PHONY : source/client_sender.i
+
+# target to preprocess a source file
+source/client_sender.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client_sender.dir/build.make CMakeFiles/Client_sender.dir/source/client_sender.cpp.i
+.PHONY : source/client_sender.cpp.i
+
+source/client_sender.s: source/client_sender.cpp.s
+.PHONY : source/client_sender.s
+
+# target to generate assembly for a file
+source/client_sender.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client_sender.dir/build.make CMakeFiles/Client_sender.dir/source/client_sender.cpp.s
+.PHONY : source/client_sender.cpp.s
 
 source/server.o: source/server.cpp.o
 .PHONY : source/server.o
@@ -198,11 +235,15 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... Client"
+	@echo "... Client_receiver"
+	@echo "... Client_sender"
 	@echo "... Server"
-	@echo "... source/client.o"
-	@echo "... source/client.i"
-	@echo "... source/client.s"
+	@echo "... source/client_receiver.o"
+	@echo "... source/client_receiver.i"
+	@echo "... source/client_receiver.s"
+	@echo "... source/client_sender.o"
+	@echo "... source/client_sender.i"
+	@echo "... source/client_sender.s"
 	@echo "... source/server.o"
 	@echo "... source/server.i"
 	@echo "... source/server.s"

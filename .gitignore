@@ -40,10 +40,13 @@
 .vscode/*
 
 #cmake
-cmake_install.cmake
-CMakeCache.txt
-Makefile.cmake
+/cmake_install.cmake
+/CMakeCache.txt
+Makefile
 
 #build
 Client
 Server
+Client_sender
+Client_receiver
+/CMakeFiles/*
