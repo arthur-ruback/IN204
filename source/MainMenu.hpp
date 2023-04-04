@@ -10,9 +10,10 @@ class MainMenu : public State{
         bool createNewChat;
         int nbChats;
         std::vector<Button*> *chats;
+        std::string pathImages;
     
     public:
-        MainMenu(std::vector<Button*> *_chats);
+        MainMenu(std::vector<Button*> *_chats,std::string fontPath, std::string imagesPath);
         virtual ~MainMenu();
         void addNewChat(SDL_Window * window, SDL_Renderer * ren);
         void updateChats(SDL_Window * window, SDL_Renderer * ren, SDL_Texture* buttonTexture);

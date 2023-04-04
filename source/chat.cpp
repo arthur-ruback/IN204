@@ -36,8 +36,6 @@ Chat::Chat(std::string fontPath, std::string _whoImTalkingTo){
 }
 
 Chat::~Chat(){
-    TTF_Quit();
-    SDL_Quit();
     delete msgContainer;
 }
 

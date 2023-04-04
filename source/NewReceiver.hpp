@@ -12,9 +12,10 @@ class NewReceiver : public State {
     private:
         bool confirmNewChat;
         std::string inputText;
+        std::string pathImages;
 
     public:
-        NewReceiver();
+        NewReceiver(std::string,std::string);
         virtual ~NewReceiver();
         int execute();
         bool getConfirmNewChat();

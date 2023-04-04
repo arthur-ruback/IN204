@@ -18,15 +18,15 @@ class Button{
     
     public:
         std::string userName;
-        Button();
-        Button(SDL_Window * windows, SDL_Renderer * renderer, int x, int y, const char* file);
-        Button(SDL_Window * windows, SDL_Renderer * renderer, int x, int y);
+        Button(std::string fontPath, const std::string imagesPath);
+        Button(SDL_Window * windows, SDL_Renderer * renderer, int x, int y, std::string fontPath, std::string imagesPath);
         virtual ~Button();
         void draw();
         void drawUserName();
         void setWindowRenderer(SDL_Window * newWindow, SDL_Renderer * newRen, SDL_Texture* newTexture);
         SDL_Rect getButtonRect();
         SDL_Texture* getTexture();
+        std::string pathImages;
         void insertUserName(std::string userName);
 };
 

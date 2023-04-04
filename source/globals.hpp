@@ -19,4 +19,6 @@ namespace global{
     const int MAINMENU = 1;
     const int CHAT = 2;
     const int NEWRECEIVER = 3;
+    const std::string pathToFont = "source/fonts/arial.ttf";
+    const std::string pathToImgs = "source/images/";
 }

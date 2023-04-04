@@ -5,26 +5,30 @@ const int WIDTH_LIMIT = 492;
 const int MAX_CHARACTER = 15;
 const int NORMAL = 1;
 
-NewReceiver::NewReceiver(){
+NewReceiver::NewReceiver(std::string fontPath, std::string imagesPath){
     confirmNewChat = false;
-    TTF_Init();
-    gFontNormal = TTF_OpenFont("fonts/arial.ttf", global::FONT_SIZE);
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
+        logSDLError("SDL_Init");
+    if (TTF_Init() != 0)
+        logSDLError("TTF_Init");
+
+    gFontNormal = TTF_OpenFont(fontPath.c_str(), global::FONT_SIZE);
     if (gFontNormal == nullptr) {
         std::cerr << "Error in font initialization" << std::endl;
     }
-    gFontSmall = TTF_OpenFont("fonts/arial.ttf", global::FONT_SMALL_SIZE);
+    gFontSmall = TTF_OpenFont(fontPath.c_str(), global::FONT_SMALL_SIZE);
     if (gFontSmall == nullptr) {
         std::cerr << "Error in font initialization" << std::endl;
     }
+    pathImages = imagesPath;
 }
 
 NewReceiver::~NewReceiver(){
-
+    TTF_Quit();
+    SDL_Quit();
 }
 
 int NewReceiver::execute(){
-
-    SDL_Init(SDL_INIT_EVERYTHING);
     SDL_Window * windowAdd = SDL_CreateWindow("New Chat",
                             SDL_WINDOWPOS_UNDEFINED,
                             SDL_WINDOWPOS_UNDEFINED,
@@ -42,7 +46,7 @@ int NewReceiver::execute(){
     SDL_Rect backgroundRect = {0, 0, 600, 350};
 
     // TO WHO
-    SDL_Texture * alterarTexture = IMG_LoadTexture(rendererAdd, "to.png");
+    SDL_Texture * alterarTexture = IMG_LoadTexture(rendererAdd, std::string(pathImages+"to.png").c_str());
     SDL_Rect cabecalhoRect = {50, 70, 60, 30};
 
     // NAME TEXT
@@ -50,11 +54,11 @@ int NewReceiver::execute(){
     SDL_Rect nameTextRect = {59, 119, 492, 56};
 
     // CONFIRM BUTTON
-    Button * confirmButton = new Button(windowAdd, rendererAdd, 350, 250, "confirmButton.png");
+    Button * confirmButton = new Button(windowAdd, rendererAdd, 350, 250, global::pathToFont, std::string(pathImages+"confirmButton.png").c_str());
     SDL_Rect confirmButtonRect = confirmButton->getButtonRect();
 
     // CANCEL BUTTON
-    Button * cancelButton = new Button(windowAdd, rendererAdd, 90, 250, "cancelButton.png");
+    Button * cancelButton = new Button(windowAdd, rendererAdd, 90, 250, global::pathToFont, std::string(pathImages+"cancelButton.png").c_str());
     SDL_Rect cancelButtonRect = cancelButton->getButtonRect();
 
     while (running){
@@ -71,8 +75,10 @@ int NewReceiver::execute(){
                 SDL_Point mousePoint = {mouseX, mouseY};
                 // Confirm Button
                 if (SDL_PointInRect(&mousePoint, &confirmButtonRect)) {
-                    confirmNewChat = true;
-                    running = false;
+                    if (inputText.size() != 0){
+                        confirmNewChat = true;
+                        running = false;
+                    }
                 // Cancel Button
                 }else if (SDL_PointInRect(&mousePoint, &cancelButtonRect)) {
                     confirmNewChat = false;

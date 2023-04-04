@@ -1,10 +1,13 @@
 # include "State.hpp"
 
 State::State(){
-    nameUser = "batatinha";
+    nameUser = "";
 }
 
-State::~State(){}
+State::~State(){
+    TTF_Quit();
+    SDL_Quit();
+}
 
 std::string State::getNameUser(){
     return nameUser;

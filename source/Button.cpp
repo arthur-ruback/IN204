@@ -3,33 +3,32 @@
 
 const int WIDTH_LIMIT = 492;
 
-Button::Button(){
-    
+Button::Button(std::string fontPath, std::string imagesPath){
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
+        logSDLError("SDL_Init");
+    if (TTF_Init() != 0)
+        logSDLError("TTF_Init");
+
+    gFontNormal = TTF_OpenFont(fontPath.c_str(), global::FONT_SIZE);
+    if (gFontNormal == nullptr) {
+        std::cerr << "Error in font initialization" << std::endl;
+    }
+    pathImages = imagesPath;
 }
 
-Button::Button(SDL_Window * windows, SDL_Renderer * renderer, int x, int y, const char* file) {
-    gFontNormal = TTF_OpenFont("fonts/arial.ttf", global::FONT_SIZE);
+Button::Button(SDL_Window * windows, SDL_Renderer * renderer, int x, int y, std::string fontPath, const std::string imagePath) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
+        logSDLError("SDL_Init");
+    if (TTF_Init() != 0)
+        logSDLError("TTF_Init");
+
+    gFontNormal = TTF_OpenFont(fontPath.c_str(), global::FONT_SIZE);
     if (gFontNormal == nullptr) {
         std::cerr << "Error in font initialization" << std::endl;
     }
     win = windows;
     ren = renderer;
-    buttonSurface = IMG_Load(file);
-    buttonTexture = SDL_CreateTextureFromSurface(ren, buttonSurface);
-    int buttonWidth = buttonSurface->w;
-    int buttonHeight = buttonSurface->h;
-    buttonRect = { x, y, buttonWidth, buttonHeight };
-    SDL_FreeSurface(buttonSurface);
-}
-
-Button::Button(SDL_Window * windows, SDL_Renderer * renderer, int x, int y) {
-    gFontNormal = TTF_OpenFont("fonts/arial.ttf", global::FONT_SIZE);
-    if (gFontNormal == nullptr) {
-        std::cerr << "Error in font initialization" << std::endl;
-    }
-    win = windows;
-    ren = renderer;
-    buttonSurface = IMG_Load("profileChat.png");
+    buttonSurface = IMG_Load(imagePath.c_str());
     buttonTexture = SDL_CreateTextureFromSurface(ren, buttonSurface);
     int buttonWidth = buttonSurface->w;
     int buttonHeight = buttonSurface->h;
