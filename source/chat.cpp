@@ -20,14 +20,6 @@ Chat::Chat(std::string fontPath, std::string _whoImTalkingTo){
     if (TTF_Init() != 0)
         logSDLError("TTF_Init");
 
-    Window = SDL_CreateWindow("Chat", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-    if (Window == nullptr)
-        logSDLError("SDL_CreateWindow (main)");
-
-    renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED);
-    if (renderer == nullptr) 
-        logSDLError("SDL_CreateRenderer (main)");
-
     fontNormal = TTF_OpenFont(fontPath.c_str(), global::FONT_SIZE);
     if (fontNormal == nullptr)
         logSDLError("TTF_OpenFont");
@@ -44,8 +36,6 @@ Chat::Chat(std::string fontPath, std::string _whoImTalkingTo){
 }
 
 Chat::~Chat(){
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(Window);
     TTF_Quit();
     SDL_Quit();
     delete msgContainer;
@@ -131,6 +121,14 @@ int Chat::execute(){
     SDL_Event event;
     int yOffset = 0;
     std::string inputText = "> ";
+
+    Window = SDL_CreateWindow("Chat", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    if (Window == nullptr)
+        logSDLError("SDL_CreateWindow (main)");
+
+    renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED);
+    if (renderer == nullptr) 
+        logSDLError("SDL_CreateRenderer (main)");
 
     bool flagRenderText = true;
     while (!quit) {
@@ -251,5 +249,7 @@ int Chat::execute(){
         }
         SDL_Delay( 50 );
     }
-    return 1;
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(Window);
+    return global::MAINMENU;
 }
