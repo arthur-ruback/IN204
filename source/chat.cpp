@@ -103,8 +103,8 @@ int Chat::execute(){
         logSDLError("SDL_CreateRenderer (main)");
     
     // RETURN BUTTON
-    //Button * returnButton = new Button(Window, renderer, 0, 0, global::pathToFont, std::string(global::pathToImgs+"returnButton.png").c_str());
-    //SDL_Rect returnButtonRect = returnButton->getButtonRect();
+    Button returnButton = Button(Window, renderer, 0, 0, global::pathToFont, std::string(global::pathToImgs+"returnButton.png").c_str());
+    SDL_Rect returnButtonRect = returnButton.getButtonRect();
 
     bool flagRenderText = true;
     while (!quit) {
@@ -183,9 +183,23 @@ int Chat::execute(){
                     flagRenderText = true;
                 }
             }
+            else if (event.type == SDL_MOUSEBUTTONDOWN){
+                // Verifique se o botão foi pressionado
+                int mouseX = event.button.x;
+                int mouseY = event.button.y;
+                SDL_Point mousePoint = {mouseX, mouseY};
+                // Return Button
+                if (SDL_PointInRect(&mousePoint, &returnButtonRect)) {
+                    if (inputText.size() != 0){
+                        quit = true;
+                        break;
+                    }
+                }
+            }
         }
 
         if(flagRenderText){
+
             // update scroll
             scrollMessages(yOffset, msgContainer->getTotalHeight(),0);
             //update textbox size
@@ -211,6 +225,9 @@ int Chat::execute(){
             SDL_RenderFillRect( renderer, &rect2 );
 
             renderText(whoImTalkingTo, global::SIDE_SPACCING, global::V_SPACING, fontBig, MAX_MSG_WIDTH, renderer);
+
+            //RETURN BUTTON
+            returnButton.draw();
             
             // show
             SDL_RenderPresent(renderer);

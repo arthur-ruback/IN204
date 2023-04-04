@@ -2,6 +2,7 @@
 #define BUTTONCHAT_H
 
 #include "Button.hpp"
+#include "chat.hpp"
 
 class ButtonChat : public Button{
     private:
