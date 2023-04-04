@@ -13,6 +13,8 @@
 #include "globals.hpp"
 #include "common.hpp"
 #include "chat.hpp"
+#include "Button.hpp"
+
 
 #define ENABLE_DEBUG
 
