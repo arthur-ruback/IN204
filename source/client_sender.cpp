@@ -8,7 +8,7 @@
 int main()
 {
     sf::Packet toSend, toRecv;
-    Message sendMsg, recvMsg;
+    MessageNet sendMsg, recvMsg;
     sf::TcpSocket socket;
     sf::Socket::Status status = socket.connect("127.0.0.1", 53001);
     if (status != sf::Socket::Done)
@@ -26,7 +26,7 @@ int main()
     }
 
     // Server handshake
-    Message authMsg = {MSG_CONX_REQ, myID, SERVER_ID, std::string("0")};
+    MessageNet authMsg = {MSG_CONX_REQ, myID, SERVER_ID, std::string("0")};
     toSend << authMsg;
     std::cout << "Sending: " << authMsg << std::endl;
     socket.send(toSend);
@@ -44,7 +44,7 @@ int main()
     std::cout << "0 for no | N for desired id" << std::endl;
     std::cin >> aux;
     if(aux){
-        Message linkMsg = {MSG_LINK_REQ, myID, SERVER_ID, std::to_string(aux)};
+        MessageNet linkMsg = {MSG_LINK_REQ, myID, SERVER_ID, std::to_string(aux)};
         toSend.clear();
         toSend << linkMsg;
         std::cout << "Sending: " << linkMsg << std::endl;

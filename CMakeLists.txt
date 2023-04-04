@@ -1,22 +1,26 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 project(IN204_Messenger VERSION 0.2)
 
 
-add_executable(Client_sender source/client_sender.cpp)
+add_executable(Client_sender source/client_sender.cpp source/common.cpp)
 
-add_executable(Client_receiver source/client_receiver.cpp)
+add_executable(Client_receiver source/client_receiver.cpp source/common.cpp)
 
-add_executable(Server source/server.cpp)
+add_executable(Server source/server.cpp source/common.cpp)
 
-target_link_libraries(Client_sender sfml-system sfml-graphics sfml-window sfml-network)
+add_executable(GraphicalTest source/graphicaltest.cpp source/Message.cpp source/MsgContainer.cpp source/common.cpp source/chat.cpp source/State.cpp)
 
-target_link_libraries(Client_receiver sfml-system sfml-graphics sfml-window sfml-network)
+target_link_libraries(Client_sender sfml-system sfml-graphics sfml-window sfml-network SDL2 SDL2_ttf)
 
-target_link_libraries(Server sfml-system sfml-graphics sfml-window sfml-network)
+target_link_libraries(Client_receiver sfml-system sfml-graphics sfml-window sfml-network SDL2 SDL2_ttf)
+
+target_link_libraries(Server sfml-system sfml-graphics sfml-window sfml-network SDL2 SDL2_ttf)
+
+target_link_libraries(GraphicalTest SDL2 SDL2_ttf)
 
 #find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
 

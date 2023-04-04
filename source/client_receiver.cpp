@@ -8,7 +8,7 @@
 int main()
 {
     sf::Packet toSend, toRecv;
-    Message sendMsg, recvMsg;
+    MessageNet sendMsg, recvMsg;
     sf::TcpSocket socket;
     sf::Socket::Status status = socket.connect("127.0.0.1", 53001);
     if (status != sf::Socket::Done)
@@ -26,7 +26,7 @@ int main()
     }
 
     // Server handshake
-    Message authMsg = {MSG_CONX_REQ, myID, SERVER_ID, std::string("1")};
+    MessageNet authMsg = {MSG_CONX_REQ, myID, SERVER_ID, std::string("1")};
     toSend << authMsg;
     std::cout << "Sending: " << authMsg << std::endl;
     socket.send(toSend);
@@ -47,26 +47,6 @@ int main()
     }
     
     std::cout << "Done Sending" << std::endl;
-
-
-
-    // sf::RenderWindow window(sf::VideoMode(1200, 1200), "SFML works!");
-    // sf::CircleShape shape(100.f);
-    // shape.setFillColor(sf::Color::Green);
-
-    // while (window.isOpen())
-    // {
-    //     sf::Event event;
-    //     while (window.pollEvent(event))
-    //     {
-    //         if (event.type == sf::Event::Closed)
-    //             window.close();
-    //     }
-
-    //     window.clear();
-    //     window.draw(shape);
-    //     window.display();
-    // }
 
     return 0;
 }

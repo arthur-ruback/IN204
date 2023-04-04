@@ -3,6 +3,35 @@
 #include <string>
 #include <iostream>
 
+// ----------------------
+// ---- GENERAL PART ----
+// ----------------------
+
+namespace debugging
+{
+#ifdef ENABLE_DEBUG
+    constexpr bool debug = true;
+#else
+    constexpr bool debug = false;
+#endif
+
+    template <typename... Args>
+    void print(const char* file, int line, Args... args) {
+        (std::clog << "[" << file << ":" << line << "] "
+                  << ... << args) << std::endl;
+    }
+}
+
+#define DEBUG(...)                                              \
+    do {                                                        \
+        if (debugging::debug)                                   \
+            debugging::print(__FILE__, __LINE__, __VA_ARGS__);  \
+    } while (0)
+
+// ----------------------
+// ---- NETWORK PART ----
+// ----------------------
+
 #define SERVER_ID 0
 
 #define MSG_STD      0
@@ -23,7 +52,7 @@ struct ClientData {
     unsigned link;
 };
 
-struct Message
+struct MessageNet
 {
     sf::Uint32 msgType;
     sf::Uint32 sender;
@@ -31,22 +60,22 @@ struct Message
     std::string content;
 };
 
-sf::Packet& operator <<(sf::Packet& packet, const Message& message)
+inline sf::Packet& operator <<(sf::Packet& packet, const MessageNet& message)
 {
     return packet << message.msgType << message.sender << message.dest << message.content;
 }
 
-sf::Packet& operator >>(sf::Packet& packet, Message& message)
+inline sf::Packet& operator >>(sf::Packet& packet, MessageNet& message)
 {
     return packet >> message.msgType >> message.sender >> message.dest >> message.content;
 }
 
-std::ostream& operator << (std::ostream& aStream, const Message& message)
+inline std::ostream& operator << (std::ostream& aStream, const MessageNet& message)
 {
     return aStream << "[" << message.msgType << "] FROM:" << message.sender << " TO:" << message.dest << " CONTENT: " << message.content;
 }
 
-struct AuthMessage {
+struct AuthMessageNet {
     sf::Uint16 msgType;
     sf::Uint32 sender;
     sf::Uint32 dest;
@@ -54,18 +83,35 @@ struct AuthMessage {
     sf::Uint32 authentication;
 };
 
-sf::Packet& operator <<(sf::Packet& packet, const AuthMessage& message)
+inline sf::Packet& operator <<(sf::Packet& packet, const AuthMessageNet& message)
 {
     return packet << message.msgType << message.sender << message.dest << message.content << message.authentication;
 }
 
-sf::Packet& operator >>(sf::Packet& packet, AuthMessage& message)
+inline sf::Packet& operator >>(sf::Packet& packet, AuthMessageNet& message)
 {
     return packet >> message.msgType >> message.sender >> message.dest >> message.content >> message.authentication;
 }
 
-std::ostream& operator << (std::ostream& aStream, const AuthMessage& message)
+inline std::ostream& operator << (std::ostream& aStream, const AuthMessageNet& message)
 {
     return aStream << "[" << message.msgType << "]FROM:" << message.sender << " TO:" << message.dest <<
          " CONTENT: " << message.content << " AUTH: " << message.authentication;
 }
+
+// -----------------------
+// ---- GRAPHICS PART ----
+// -----------------------
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+
+void logSDLError(const std::string&);
+
+int renderText(const std::string&, int, int, TTF_Font*, unsigned, SDL_Renderer*);
+
+int getHeightText(const std::string&, unsigned, TTF_Font*, SDL_Renderer*);
+
+int getWidthText(const std::string&, unsigned, TTF_Font*, SDL_Renderer*);
+
+void getSizeText(const std::string&, unsigned, TTF_Font*, SDL_Renderer*, int&, int&);

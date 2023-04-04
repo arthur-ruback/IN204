@@ -33,7 +33,7 @@ int main(){
     std::list<ClientData> clients;
     sf::SocketSelector selector;
 
-    Message toRead, toSend;
+    MessageNet toRead, toSend;
 
     // to be notified in case of new connection
     selector.add(listener);
