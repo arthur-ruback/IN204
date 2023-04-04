@@ -4,14 +4,16 @@
 #include "State.hpp"
 #include "Button.hpp"
 #include "ButtonChat.hpp"
+#include "chat.hpp"
 
 class MainMenu : public State{
     private:
-        int nextState;
+        bool buttonNewChat;
         bool createNewChat;
         int nbChats;
         std::vector<ButtonChat*> *chats;
         std::string pathImages;
+        Chat * chatSelected;
     
     public:
         MainMenu(std::vector<ButtonChat*> *_chats,std::string fontPath, std::string imagesPath);
@@ -20,7 +22,7 @@ class MainMenu : public State{
         void updateChats(SDL_Window * window, SDL_Renderer * ren, SDL_Texture* buttonTexture);
         int execute();
         void confirmNewChat(bool confirm);
-        void scrollMessages(int& yOffset, int heightMsgs, int amount);
+        Chat * getChatSelected();
 };
 
 #endif /* MAINMENU_H */

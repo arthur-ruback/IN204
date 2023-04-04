@@ -32,5 +32,4 @@ class Chat : public State {
     private:
         void renderMessages(int);
         void scrollMessages(int&, int, int amount=0);
-
 };

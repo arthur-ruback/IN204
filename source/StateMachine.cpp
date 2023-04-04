@@ -11,15 +11,14 @@ using namespace std;
 int main(int argc, char** argv){
     std::vector<ButtonChat*> chats;
     MainMenu mainMenu = MainMenu(&chats, global::pathToFont, global::pathToImgs);
-    Chat chat = Chat(std::string(global::pathToFont), "Arthur");
+    Chat *chat = new Chat(std::string(global::pathToFont), "Arthur");
     NewReceiver newReceiver = NewReceiver(global::pathToFont, global::pathToImgs);
 
-    chat.addMessage(Message({"Hello", "John","12","00"}));
+    chat->addMessage(Message({"Hello", "John","12","00"}));
     
     int currentState = global::MAINMENU;
     
-    bool run = true;
-    while (run) {
+    while (true) {
         switch (currentState) {
         case global::MAINMENU:
             mainMenu.confirmNewChat(newReceiver.getConfirmNewChat());
@@ -27,14 +26,14 @@ int main(int argc, char** argv){
             currentState = mainMenu.execute();
             break;
         case global::CHAT:
-            currentState = chat.execute();
+            chat = mainMenu.getChatSelected();
+            currentState = chat->execute();
             break;
         case global::NEWRECEIVER:
             currentState = newReceiver.execute();
             break;
-        default:
-            run = false;
-            break;
+        //case global::MAKENEWCHAT:
+
         }
     }
     

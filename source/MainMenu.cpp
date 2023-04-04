@@ -3,6 +3,7 @@
 #include <SDL2/SDL_image.h>
 #include "MainMenu.hpp"
 #include "Button.hpp"
+#include "chat.hpp"
 
 const int CHAT = 2;
 const int NEWRECEIVER = 3;
@@ -10,14 +11,11 @@ const int NEWRECEIVER = 3;
 MainMenu::MainMenu(std::vector<ButtonChat*> *_chats, std::string fontPath, std::string imagesPath) : chats(_chats), State(fontPath) {
     pathImages = imagesPath;
     nbChats = 0;
-    nextState = global::MAINMENU;
 }
 
 MainMenu::~MainMenu() {}
 
 int MainMenu::execute(){
-
-    nextState = global::MAINMENU;
 
     SDL_Window * window = SDL_CreateWindow("Artheus Web",
                             SDL_WINDOWPOS_UNDEFINED,
@@ -38,7 +36,6 @@ int MainMenu::execute(){
 
     //MONTAR CHATS (BOTOES)
     if (createNewChat){
-        std::cout << nameUser << std::endl;
         addNewChat(window, ren);
         updateChats(window, ren, chats->back()->getTexture());
         nbChats += 1;
@@ -46,40 +43,32 @@ int MainMenu::execute(){
     }
 
     //MONTAR ESPACO BRANCO SEM CHAT
-    SDL_Rect conversasRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+    SDL_Rect conversasRect = {0, 162+nbChats*92, 563, 774-nbChats*92};
 
-    SDL_Event event;
-    bool flagRenderText = true;
     while (running){
+        SDL_Event event;
         while (SDL_PollEvent(&event)){
             switch(event.type){
                 case SDL_QUIT:
-                    running = false;
-                    nextState = global::DIE;
-                    break;
-                case SDL_MOUSEWHEEL:
-                    //TODO: scroll mgs
-                    flagRenderText = true;
-                    break;
+                    exit(0);
                 case SDL_MOUSEBUTTONDOWN:
                     // Verifique se o botão foi pressionado
                     int mouseX = event.button.x;
                     int mouseY = event.button.y;
                     SDL_Point mousePoint = {mouseX, mouseY};
-                    /*if (SDL_PointInRect(&mousePoint, &buttonRect)) {
-                        buttonNewChat = false;
-                        //printf("Botão 0 pressionado!\n");
-                        running = false;
-                    }*/
-                    for (auto i = 0; i < chats->size(); i++){
-                        SDL_Rect chatRect = (*chats)[i]->getButtonRect();
+                    for (auto i : *chats){
+                        SDL_Rect chatRect = i->getButtonRect();
                         if (SDL_PointInRect(&mousePoint, &chatRect)) {
-                            std::cout << "Botão " << i+1 << "pressionado!\n" << std::endl;
+                            chatSelected = i->getChat();
+                            buttonNewChat = false;
+                            //std::cout << "Botão " << i+1 << "pressionado!\n" << std::endl;
                             running = false;
                         }
                     }
                     if (SDL_PointInRect(&mousePoint, &buttonHeaderRect)) {
-                        nextState = global::NEWRECEIVER;
+                        buttonNewChat = true;
+                        //createNewChat = true;
+                        //printf("Header pressionado!\n");
                         running = false;
                     }
                     break;
@@ -87,38 +76,38 @@ int MainMenu::execute(){
 
         }
 
-        if(flagRenderText){
+        //CABECALHO
+        SDL_RenderCopy(ren, textureHeader, NULL, &cabecalhoRect);
+        buttonHeader->draw();
 
-            //CABECALHO
-            SDL_RenderCopy(ren, textureHeader, NULL, &cabecalhoRect);
-            buttonHeader->draw();
-
-            //ESPACO EM BRANCO
-            SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
-            SDL_RenderFillRect(ren, &conversasRect);
-
-            //BUTTON
-            for (auto i : *chats){
-                i->draw();
-            }
-
-            SDL_RenderPresent(ren);
-            flagRenderText = false;
+        //BUTTON
+        for (auto i : *chats){
+            i->draw();
         }
+
+        //ESPACO EM BRANCO
+        // SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
+        // SDL_RenderFillRect(ren, &conversasRect);
+
+        SDL_RenderPresent(ren);
     }
     // Libere os recursos utilizados pela biblioteca SDL2
     SDL_DestroyRenderer(ren);
     SDL_DestroyWindow(window);
     SDL_Quit();
 
-    DEBUG("next state is ", nextState);
-    return nextState;
+    if (buttonNewChat){
+        return NEWRECEIVER;
+    } else{
+        return CHAT;
+    }
 
 }
 
 void MainMenu::addNewChat(SDL_Window * window, SDL_Renderer * ren){
-    ButtonChat *newChat = new ButtonChat(window, ren, 0, 70+nbChats*92, global::pathToFont, std::string(pathImages+"profileChat.png"), nameUser);
-    chats->push_back(newChat);
+    Chat * newChat = new Chat(std::string(global::pathToFont), nameUser);
+    ButtonChat *newBottonChat = new ButtonChat(window, ren, 0, 70+nbChats*92, global::pathToFont, std::string(pathImages+"profileChat.png"), nameUser, newChat);
+    chats->push_back(newBottonChat);
 }
 
 void MainMenu::updateChats(SDL_Window * window, SDL_Renderer * ren, SDL_Texture* buttonTexture){
@@ -135,18 +124,6 @@ void MainMenu::confirmNewChat(bool confirm){
     }
 }
 
-void MainMenu::scrollMessages(int& yOffset, int heightMsgs, int amount) {
-    yOffset += amount * global::SCROLL_SPEED;
-    // not enough chats to fill the screen
-    if (heightMsgs < SCREEN_HEIGHT - (global::HEADER_HEIGHT + global::V_SPACING)){
-        yOffset = global::HEADER_HEIGHT + global::V_SPACING;
-    // enough messages to fill the screen
-    } else {
-        // first message always on the top of the screen or hidden (y < HEADER_HEIGHT)
-        if (yOffset > global::HEADER_HEIGHT + global::V_SPACING)
-            yOffset = global::HEADER_HEIGHT + global::V_SPACING;
-        // cannot have empty pace on the bottom if there are sufficint messages 
-        else if (yOffset < (SCREEN_HEIGHT - heightMsgs))
-            yOffset = (SCREEN_HEIGHT - heightMsgs);
-    }
+Chat* MainMenu::getChatSelected(){
+    return chatSelected;
 }
