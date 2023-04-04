@@ -1,36 +1,10 @@
 #include "chat.hpp"
 
-Chat::Chat(std::string fontPath, std::string _whoImTalkingTo){
+Chat::Chat(std::string fontPath, std::string _whoImTalkingTo) : State(fontPath){
     SCREEN_WIDTH = global::INIT_SCREEN_WIDTH;
     SCREEN_HEIGHT = global::INIT_SCREEN_HEIGHT;
     TEXT_BOX_HEIGHT = global::INIT_TEXT_BOX_HEIGHT;
     MAX_MSG_WIDTH = SCREEN_WIDTH * 0.8 - 2 * global::SIDE_SPACCING;
-    Window = nullptr;
-    renderer = nullptr;
-    fontNormal = nullptr;
-    fontSmall = nullptr;
-    fontBig = nullptr;
-    textColor = { 0, 0, 0 };
-    whoImTalkingTo = _whoImTalkingTo;
-
-    // initialization SDL
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
-        logSDLError("SDL_Init");
-
-    if (TTF_Init() != 0)
-        logSDLError("TTF_Init");
-
-    fontNormal = TTF_OpenFont(fontPath.c_str(), global::FONT_SIZE);
-    if (fontNormal == nullptr)
-        logSDLError("TTF_OpenFont");
-
-    fontSmall = TTF_OpenFont(fontPath.c_str(), (int)global::FONT_SIZE/2);
-    if (fontSmall == nullptr)
-        logSDLError("TTF_OpenFont");
-
-    fontBig = TTF_OpenFont(fontPath.c_str(), (int)global::FONT_SIZE*1.5);
-    if (fontBig == nullptr)
-        logSDLError("TTF_OpenFont");
 
     msgContainer = new MsgContainer(&getHeightText, fontNormal, fontSmall, renderer, MAX_MSG_WIDTH);
 }

@@ -11,19 +11,24 @@ using namespace std;
 
 class State{
     public:
-        State();
+        State(std::string fontPath);
         virtual ~State();
         virtual int execute() = 0;
         std::string getNameUser();
         void setNameUser(std::string newName);
 
     protected:
-        TTF_Font* gFontNormal;
-        TTF_Font* gFontSmall;
-        SDL_Color gTextColor = {0, 0, 0};
-        SDL_Renderer* gMainRenderer;
+        int SCREEN_WIDTH;
+        int SCREEN_HEIGHT;
+        int TEXT_BOX_HEIGHT;
+        int MAX_MSG_WIDTH;
+        SDL_Window* Window;
+        SDL_Renderer* renderer;
+        TTF_Font* fontNormal;
+        TTF_Font* fontSmall;
+        TTF_Font* fontBig;
+        SDL_Color textColor;
         std::string nameUser;
-        // TODO: unificar coisas comuns de janelas para todos
 };
 
 

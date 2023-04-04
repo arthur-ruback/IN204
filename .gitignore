@@ -50,3 +50,5 @@ Server
 Client_sender
 Client_receiver
 /CMakeFiles/*
+StateMachine
+GraphicalTest

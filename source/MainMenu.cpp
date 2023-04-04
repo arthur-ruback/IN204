@@ -7,30 +7,12 @@
 const int CHAT = 2;
 const int NEWRECEIVER = 3;
 
-MainMenu::MainMenu(std::vector<Button*> *_chats, std::string fontPath, std::string imagesPath) : chats(_chats) {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
-        logSDLError("SDL_Init");
-    if (TTF_Init() != 0)
-        logSDLError("TTF_Init");
-
-    gFontNormal = TTF_OpenFont(fontPath.c_str(), global::FONT_SIZE);
-    if (gFontNormal == nullptr) {
-        std::cerr << "Error in font initialization : main menu" << std::endl;
-        std::cerr << "cuttent path is:\"" << fontPath << "\"" << std::endl;
-        
-    }
-    gFontSmall = TTF_OpenFont(fontPath.c_str(), global::FONT_SMALL_SIZE);
-    if (gFontSmall == nullptr) {
-        std::cerr << "Error in font initialization : main menu" << std::endl;
-    }
+MainMenu::MainMenu(std::vector<Button*> *_chats, std::string fontPath, std::string imagesPath) : chats(_chats), State(fontPath) {
     pathImages = imagesPath;
     nbChats = 0;
 }
 
-MainMenu::~MainMenu() {
-    TTF_Quit();
-    SDL_Quit(); 
-}
+MainMenu::~MainMenu() {}
 
 int MainMenu::execute(){
 

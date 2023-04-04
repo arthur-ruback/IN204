@@ -5,28 +5,12 @@ const int WIDTH_LIMIT = 492;
 const int MAX_CHARACTER = 15;
 const int NORMAL = 1;
 
-NewReceiver::NewReceiver(std::string fontPath, std::string imagesPath){
+NewReceiver::NewReceiver(std::string fontPath, std::string imagesPath) : State(fontPath){
     confirmNewChat = false;
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
-        logSDLError("SDL_Init");
-    if (TTF_Init() != 0)
-        logSDLError("TTF_Init");
-
-    gFontNormal = TTF_OpenFont(fontPath.c_str(), global::FONT_SIZE);
-    if (gFontNormal == nullptr) {
-        std::cerr << "Error in font initialization" << std::endl;
-    }
-    gFontSmall = TTF_OpenFont(fontPath.c_str(), global::FONT_SMALL_SIZE);
-    if (gFontSmall == nullptr) {
-        std::cerr << "Error in font initialization" << std::endl;
-    }
     pathImages = imagesPath;
 }
 
-NewReceiver::~NewReceiver(){
-    TTF_Quit();
-    SDL_Quit();
-}
+NewReceiver::~NewReceiver(){}
 
 int NewReceiver::execute(){
     SDL_Window * windowAdd = SDL_CreateWindow("New Chat",
@@ -143,10 +127,10 @@ int NewReceiver::execute(){
             SDL_RenderFillRect(rendererAdd, &nameTextRect);
 
             // NUM MAX CHARACTER
-            renderText(numCharacterText, 300, 180, gFontSmall, WIDTH_LIMIT, rendererAdd);
+            renderText(numCharacterText, 300, 180, fontSmall, WIDTH_LIMIT, rendererAdd);
 
             // INPUT TEXT
-            renderText(inputText, 65, 140, gFontNormal, WIDTH_LIMIT, rendererAdd);
+            renderText(inputText, 65, 140, fontNormal, WIDTH_LIMIT, rendererAdd);
             flagRenderText = false;
 
             SDL_RenderPresent(rendererAdd);

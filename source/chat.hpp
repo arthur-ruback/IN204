@@ -18,20 +18,8 @@
 // WARNING, depends heavely on constants defined in globals.hpp
 #include "globals.hpp"
 
-// TODO: rever função render msgs para comprimir
-
 class Chat : public State {
     private:
-        int SCREEN_WIDTH;
-        int SCREEN_HEIGHT;
-        int TEXT_BOX_HEIGHT;
-        int MAX_MSG_WIDTH;
-        SDL_Window* Window;
-        SDL_Renderer* renderer;
-        TTF_Font* fontNormal;
-        TTF_Font* fontSmall;
-        TTF_Font* fontBig;
-        SDL_Color textColor;
         MsgContainer* msgContainer;
         std::string whoImTalkingTo;
 
