@@ -34,13 +34,11 @@ int MainMenu::execute(){
     SDL_Rect buttonHeaderRect = buttonHeader->getButtonRect();
 
     //MONTAR CHATS (BOTOES)
-    ButtonChat * button = new ButtonChat(window, ren, 0, 70, global::pathToFont, std::string(pathImages+"profileChat.png"), "Arthur");
-    SDL_Rect buttonRect = button->getButtonRect();
-    updateChats(window, ren, button->getTexture());
     if (createNewChat){
-        nbChats += 1;
         std::cout << nameUser << std::endl;
         addNewChat(window, ren);
+        updateChats(window, ren, chats->back()->getTexture());
+        nbChats += 1;
         createNewChat = false;
     }
 
@@ -58,11 +56,11 @@ int MainMenu::execute(){
                     int mouseX = event.button.x;
                     int mouseY = event.button.y;
                     SDL_Point mousePoint = {mouseX, mouseY};
-                    if (SDL_PointInRect(&mousePoint, &buttonRect)) {
+                    /*if (SDL_PointInRect(&mousePoint, &buttonRect)) {
                         buttonNewChat = false;
                         //printf("Botão 0 pressionado!\n");
                         running = false;
-                    }
+                    }*/
                     for (auto i : *chats){
                         SDL_Rect chatRect = i->getButtonRect();
                         if (SDL_PointInRect(&mousePoint, &chatRect)) {
@@ -87,7 +85,6 @@ int MainMenu::execute(){
         buttonHeader->draw();
 
         //BUTTON
-        button->draw();
         for (auto i : *chats){
             i->draw();
         }

@@ -14,6 +14,7 @@
 #include "MsgContainer.hpp"
 #include "common.hpp"
 #include "State.hpp"
+#include "Button.hpp"
 
 // WARNING, depends heavely on constants defined in globals.hpp
 #include "globals.hpp"

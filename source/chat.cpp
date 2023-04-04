@@ -101,6 +101,10 @@ int Chat::execute(){
     renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == nullptr) 
         logSDLError("SDL_CreateRenderer (main)");
+    
+    // RETURN BUTTON
+    //Button * returnButton = new Button(Window, renderer, 0, 0, global::pathToFont, std::string(global::pathToImgs+"returnButton.png").c_str());
+    //SDL_Rect returnButtonRect = returnButton->getButtonRect();
 
     bool flagRenderText = true;
     while (!quit) {
