@@ -18,7 +18,8 @@ int main(int argc, char** argv){
     
     int currentState = global::MAINMENU;
     
-    while (true) {
+    bool run = true;
+    while (run) {
         switch (currentState) {
         case global::MAINMENU:
             mainMenu.confirmNewChat(newReceiver.getConfirmNewChat());
@@ -30,6 +31,9 @@ int main(int argc, char** argv){
             break;
         case global::NEWRECEIVER:
             currentState = newReceiver.execute();
+            break;
+        default:
+            run = false;
             break;
         }
     }

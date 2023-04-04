@@ -7,7 +7,7 @@
 
 class MainMenu : public State{
     private:
-        bool buttonNewChat;
+        int nextState;
         bool createNewChat;
         int nbChats;
         std::vector<ButtonChat*> *chats;
@@ -20,6 +20,7 @@ class MainMenu : public State{
         void updateChats(SDL_Window * window, SDL_Renderer * ren, SDL_Texture* buttonTexture);
         int execute();
         void confirmNewChat(bool confirm);
+        void scrollMessages(int& yOffset, int heightMsgs, int amount);
 };
 
 #endif /* MAINMENU_H */
