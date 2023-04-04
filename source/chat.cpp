@@ -114,17 +114,12 @@ int Chat::execute(){
                 flagRenderText = true;
             }
             else if (event.type == SDL_WINDOWEVENT) {
-                if (event.window.event == SDL_WINDOWEVENT_ENTER) {
-                    DEBUG("cursor joined window ",(int)event.window.windowID);
-                } else if (event.window.event == SDL_WINDOWEVENT_LEAVE) {
-                    DEBUG("cursor left window ",(int)event.window.windowID);
-                } else if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                     SCREEN_WIDTH = event.window.data1;
                     SCREEN_HEIGHT = event.window.data2;
                     MAX_MSG_WIDTH = SCREEN_WIDTH * 0.8 - 2 * global::SIDE_SPACCING;
                     msgContainer->updateWidthMax(MAX_MSG_WIDTH);
                     scrollMessages(yOffset, msgContainer->getTotalHeight());
-                    DEBUG("Resizing window");
                     flagRenderText = true;
                 }
             }
@@ -152,7 +147,6 @@ int Chat::execute(){
                 //Handle enter
                 else if( event.key.keysym.sym == SDLK_RETURN)
                 {
-                    DEBUG("got enter");
                     if(inputText.size() > 2){
                         // erase "> " from string
                         inputText.erase(0,2);
@@ -177,7 +171,6 @@ int Chat::execute(){
             }//Special text input event
             else if( event.type == SDL_TEXTINPUT )
             {
-                DEBUG("Got some text");
                 //Not copy or pasting
                 if( !( SDL_GetModState() & KMOD_CTRL && ( event.text.text[ 0 ] == 'c' || event.text.text[ 0 ] == 'C' || event.text.text[ 0 ] == 'v' || event.text.text[ 0 ] == 'V' ) ) )
                 {

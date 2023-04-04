@@ -7,7 +7,7 @@
 const int CHAT = 2;
 const int NEWRECEIVER = 3;
 
-MainMenu::MainMenu(std::vector<Button*> *_chats, std::string fontPath, std::string imagesPath) : chats(_chats), State(fontPath) {
+MainMenu::MainMenu(std::vector<ButtonChat*> *_chats, std::string fontPath, std::string imagesPath) : chats(_chats), State(fontPath) {
     pathImages = imagesPath;
     nbChats = 0;
 }
@@ -27,18 +27,14 @@ int MainMenu::execute(){
     
     bool running = true;
 
-    DEBUG("done creating window");
-
     //MONTAR HEADER
     SDL_Texture * textureHeader = IMG_LoadTexture(ren, std::string(pathImages+"header.png").c_str());
     SDL_Rect cabecalhoRect = {0, 0, 373, 70};
     Button * buttonHeader = new Button(window, ren, 373, 0, global::pathToFont, std::string(pathImages+"newChat.png"));
     SDL_Rect buttonHeaderRect = buttonHeader->getButtonRect();
 
-    DEBUG("done creating header");
-
     //MONTAR CHATS (BOTOES)
-    Button * button = new Button(window, ren, 0, 70, global::pathToFont, std::string(pathImages+"profileChat.png"));
+    ButtonChat * button = new ButtonChat(window, ren, 0, 70, global::pathToFont, std::string(pathImages+"profileChat.png"), "Arthur");
     SDL_Rect buttonRect = button->getButtonRect();
     updateChats(window, ren, button->getTexture());
     if (createNewChat){
@@ -94,8 +90,6 @@ int MainMenu::execute(){
         button->draw();
         for (auto i : *chats){
             i->draw();
-            std::cout << "userName = " << i->userName << std::endl;
-            i->drawUserName();
         }
 
         //ESPACO EM BRANCO
@@ -119,8 +113,7 @@ int MainMenu::execute(){
 }
 
 void MainMenu::addNewChat(SDL_Window * window, SDL_Renderer * ren){
-    Button *newChat = new Button(window, ren, 0, 70+nbChats*92, global::pathToFont, std::string(pathImages+"profileChat.png"));
-    newChat->insertUserName(nameUser);
+    ButtonChat *newChat = new ButtonChat(window, ren, 0, 70+nbChats*92, global::pathToFont, std::string(pathImages+"profileChat.png"), nameUser);
     chats->push_back(newChat);
 }
 
