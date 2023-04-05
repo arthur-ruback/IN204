@@ -6,9 +6,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 project(IN204_Messenger VERSION 0.2)
 
 
-add_executable(Client_sender source/client_sender.cpp source/common.cpp)
+add_executable(Client_sender source/client_sender.cpp source/common.cpp source/Socket.cpp)
 
-add_executable(Client_receiver source/client_receiver.cpp source/common.cpp)
+add_executable(Client_receiver source/client_receiver.cpp source/common.cpp source/Socket.cpp)
 
 add_executable(Server source/server.cpp source/common.cpp)
 
