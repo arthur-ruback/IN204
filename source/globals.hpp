@@ -28,6 +28,8 @@ namespace global{
     const int LOGIN_WINDOW_HEIGHT = 350;
     const int MAIN_WINDOW_WIDTH = 563;
     const int MAIN_WINDOW_HEIGHT = 844;
+    const int NEW_RECEIVER_WINDOW_WIDTH = 600;
+    const int NEW_RECEIVER_WINDOW_HEIGHT = 350;
     const std::string pathToFont = "source/fonts/arial.ttf";
     const std::string pathToImgs = "source/images/";
 }

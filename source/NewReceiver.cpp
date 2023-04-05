@@ -1,8 +1,5 @@
 #include "NewReceiver.hpp"
 
-const int NEW_RECEIVER_WINDOW_WIDTH = 600;
-const int NEW_RECEIVER_WINDOW_HEIGHT = 350;
-
 NewReceiver::NewReceiver(std::string fontPath, std::string imagesPath) : State(fontPath){
     pathImages = imagesPath;
 }
@@ -13,8 +10,8 @@ int NewReceiver::execute(){
     SDL_Window * windowAdd = SDL_CreateWindow("New Chat",
                             SDL_WINDOWPOS_UNDEFINED,
                             SDL_WINDOWPOS_UNDEFINED,
-                            NEW_RECEIVER_WINDOW_WIDTH, //window_width
-                            NEW_RECEIVER_WINDOW_HEIGHT, //window height
+                            global::NEW_RECEIVER_WINDOW_WIDTH, //window_width
+                            global::NEW_RECEIVER_WINDOW_HEIGHT, //window height
                             SDL_WINDOW_SHOWN);
 
     SDL_Renderer * rendererAdd = SDL_CreateRenderer(windowAdd, -1, SDL_RENDERER_ACCELERATED);
@@ -24,7 +21,7 @@ int NewReceiver::execute(){
     bool flagRenderText = true;
 
     // BACKGROUND
-    SDL_Rect backgroundRect = {0, 0, NEW_RECEIVER_WINDOW_WIDTH, NEW_RECEIVER_WINDOW_HEIGHT};
+    SDL_Rect backgroundRect = {0, 0, global::NEW_RECEIVER_WINDOW_WIDTH, global::NEW_RECEIVER_WINDOW_HEIGHT};
 
     // TO WHO
     std::string toWho = "To:";
