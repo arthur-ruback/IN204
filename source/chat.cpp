@@ -1,12 +1,13 @@
 #include "chat.hpp"
 
-Chat::Chat(std::string fontPath, std::string _whoImTalkingTo) : State(fontPath){
+Chat::Chat(std::string fontPath, std::string receiver) : State(fontPath){
     SCREEN_WIDTH = global::INIT_SCREEN_WIDTH;
     SCREEN_HEIGHT = global::INIT_SCREEN_HEIGHT;
     TEXT_BOX_HEIGHT = global::INIT_TEXT_BOX_HEIGHT;
     MAX_MSG_WIDTH = SCREEN_WIDTH * 0.8 - 2 * global::SIDE_SPACCING;
 
     msgContainer = new MsgContainer(&getHeightText, fontNormal, fontSmall, renderer, MAX_MSG_WIDTH);
+    whoImTalkingTo = receiver;
 }
 
 Chat::~Chat(){
@@ -131,7 +132,7 @@ int Chat::execute(){
             else if( event.type == SDL_KEYDOWN )
             {
                 //Handle backspace
-                if( event.key.keysym.sym == SDLK_BACKSPACE && inputText.length() > 0 )
+                if( event.key.keysym.sym == SDLK_BACKSPACE && inputText.length() > 2 )
                 {
                     //lop off character
                     inputText.pop_back();
@@ -223,7 +224,6 @@ int Chat::execute(){
             SDL_Rect rect2 = {0,0,SCREEN_WIDTH,global::HEADER_HEIGHT};
             SDL_SetRenderDrawColor( renderer, 192, 192, 192, 255 );
             SDL_RenderFillRect( renderer, &rect2 );
-
             renderText(whoImTalkingTo, global::SIDE_SPACCING, global::V_SPACING, fontBig, MAX_MSG_WIDTH, renderer);
 
             //RETURN BUTTON

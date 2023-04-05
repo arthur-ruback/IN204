@@ -25,7 +25,8 @@ class Chat : public State {
         std::string whoImTalkingTo;
 
     public:
-        Chat(std::string, std::string);
+        //Chat(std::string, std::string);
+        Chat(std::string fontPath, std::string receiver);
         ~Chat();
         void addMessage(Message);
         int execute();
