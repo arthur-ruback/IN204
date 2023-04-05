@@ -1,8 +1,27 @@
 #include <iostream>
 #include <SFML/Network.hpp>
 #include <list>
-#include <map>
 #include "common.hpp"
+
+#define ENABLE_DEBUG_SERVER_SERVER
+
+std::string getHostname() {
+    std::string result = "";
+    FILE* pipe = popen("hostname -I", "r");
+    if (!pipe) return result;
+
+    char buffer[128];
+    while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
+        result += buffer;
+    }
+
+    pclose(pipe);
+    // Remove trailing newline character if it exists
+    if (!result.empty() && result[result.length()-1] == '\n') {
+        result.erase(result.length()-2);
+    }
+    return result;
+}
 
 bool existsClientId(std::list<ClientData> &clients, int id){
     for (auto client: clients){
@@ -13,7 +32,7 @@ bool existsClientId(std::list<ClientData> &clients, int id){
 }
 
 ClientData* findClientById(std::list<ClientData> &clients, int id){
-    // returns preferabli EMITTER
+    // returns preferably EMITTER
     for (auto & client: clients)
         if(client.id == id && client.type == EMITTER)
             return &client;
@@ -24,7 +43,7 @@ ClientData* findClientById(std::list<ClientData> &clients, int id){
 }
 
 ClientData* findClientByUser(std::list<ClientData> &clients, std::string user){
-    // returns preferabli EMITTER
+    // returns preferably EMITTER
     for (auto & client: clients)
         if(client.userName == user && client.type == EMITTER)
             return &client;
@@ -38,6 +57,7 @@ int getFreeId(std::list<ClientData> &clients){
     for(int i = 1; i < NOIDYET; i++)
         if (!existsClientId(clients,i))
             return i;
+    return -1;
 }
 
 int main(){
@@ -49,6 +69,7 @@ int main(){
         return -1;
     }
 
+    std::cout << "My IP is " << getHostname() << std::endl;
 
     std::list<ClientData> clients;
     sf::SocketSelector selector;
@@ -93,15 +114,18 @@ int main(){
                         unsigned status = ((*client).socket)->receive(packet);
                         if (status == sf::Socket::Done)
                         {
-                            if(packet >> toRead){
+                            if(packet >> toRead){  
+                                #ifdef ENABLE_DEBUG_SERVER
                                 std::cerr << "SUCESS: " << toRead << std::endl;
-
+                                #endif
                                 // Demanding connexion
                                 if(toRead.msgType == MSG_CONX_REQ){
 
                                     if(existsClientId(clients,toRead.sender)){
                                         // client claiming to be someone else
+                                        #ifdef ENABLE_DEBUG_SERVER
                                         std::cerr << "Disconnecting from repeated id client: " << ((*client).socket)->getRemoteAddress() << std::endl;
+                                        #endif
                                         selector.remove(*((*client).socket));
                                         delete (*client).socket;
                                         client = clients.erase(client);
@@ -114,7 +138,6 @@ int main(){
                                             (*client).id = toRead.sender;
                                         }
 
-                                        // TODO: Authenticate
                                         int aux = 0;
                                         (*client).type = std::stoi(std::to_string(toRead.content[0]));
                                         toRead.content.erase(0,1);
@@ -129,7 +152,9 @@ int main(){
                                         packet << toSend;
 
                                         ((*client).socket)->send(packet);
-                                        std::cerr << "Admited " << (*client).id << " as " << (((*client).type)? "reciever" : "emitter") << std::endl << "AKA:" << (*client).userName << std::endl;
+                                        #ifdef ENABLE_DEBUG_SERVER
+                                        std::cerr << "Admited " << (*client).id << " as " << (((*client).type)? "reciever" : "emitter")  << "| AKA:" << (*client).userName << std::endl;
+                                        #endif
                                     }
                                 }else if(toRead.msgType == MSG_STD){
                                     ClientData *clientData = findClientById(clients,toRead.dest);
@@ -142,7 +167,9 @@ int main(){
                                         packet.clear();
                                         packet << toSend;
                                         ((*client).socket)->send(packet);
+                                        #ifdef ENABLE_DEBUG_SERVER
                                         std::cerr << "Client " << toRead.dest << " not registered in database" << std::endl;
+                                        #endif
                                     }else if(((*clientData).type == EMITTER) && (*clientData).link == 0){
                                         // destination not adequate to recv data, return error to sender
                                         toSend.msgType = MSG_ERROR;
@@ -152,13 +179,17 @@ int main(){
                                         packet.clear();
                                         packet << toSend;
                                         ((*client).socket)->send(packet);
+                                        #ifdef ENABLE_DEBUG_SERVER
                                         std::cerr << "Client " << toRead.dest << " is not a reciever nor is linked to one" << std::endl;
+                                        #endif
                                     }else{
                                         // redirecting through link or normal relay
                                         if ((*clientData).link != 0)
                                             clientData = findClientById(clients,(*clientData).link);
                                         (*clientData).socket->send(packet);
+                                        #ifdef ENABLE_DEBUG_SERVER
                                         std::cerr << "Relaying msg to " << toRead.dest << std::endl;
+                                        #endif
                                         // send ok to send
                                         toSend.msgType = MSG_OK;
                                         toSend.sender = SERVER_ID;
@@ -171,7 +202,9 @@ int main(){
                                 // try to link to another client
                                 }else if(toRead.msgType == MSG_LINK_REQ){
                                     (*client).link = std::stoi(toRead.content);
+                                    #ifdef ENABLE_DEBUG_SERVER
                                     std::cerr << "Linked " << (*client).id << " and " << (*client).link << std::endl;
+                                    #endif
                                     toSend.msgType = MSG_OK;
                                     toSend.sender = SERVER_ID;
                                     toSend.dest = (*client).id;
@@ -179,7 +212,7 @@ int main(){
                                     packet.clear();
                                     packet << toSend;
                                     ((*client).socket)->send(packet);
-                            
+                                // name of who has this ID
                                 }else if(toRead.msgType == MSG_WHOID_REQ){
                                     toSend.msgType = MSG_WHOID_REP;
                                     toSend.sender = SERVER_ID;
@@ -192,10 +225,12 @@ int main(){
                                     
                                     packet.clear();
                                     packet << toSend;
+                                    #ifdef ENABLE_DEBUG_SERVER
                                     std::cerr << "Awnsering request to name" << std::endl;
                                     std::cerr << toSend << std::endl;
+                                    #endif
                                     ((*client).socket)->send(packet);
-
+                                // ID of who has this name, in case of multiple, privileges EMITTER
                                 }else if(toRead.msgType == MSG_WHOUSER_REQ){
                                     toSend.msgType = MSG_WHOUSER_REP;
                                     toSend.sender = SERVER_ID;
@@ -208,8 +243,10 @@ int main(){
                                     
                                     packet.clear();
                                     packet << toSend;
+                                    #ifdef ENABLE_DEBUG_SERVER
                                     std::cerr << "Awnsering request to ID" << std::endl;
                                     std::cerr << toSend << std::endl;
+                                    #endif
                                     ((*client).socket)->send(packet);
                                 }
                             }
@@ -231,8 +268,6 @@ int main(){
             } // if socket is ready
         }// if selector.wait
     }// while
-
-
 }
 
     
