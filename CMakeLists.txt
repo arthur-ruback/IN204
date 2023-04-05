@@ -12,4 +12,4 @@ add_executable(ArtheusWeb source/ArtheusWeb.cpp source/MainMenu.cpp source/Butto
 
 target_link_libraries(Server sfml-system sfml-graphics sfml-window sfml-network SDL2 SDL2_ttf)
 
-target_link_libraries(StateMachine SDL2 SDL2_ttf SDL2_image sfml-system sfml-network)
+target_link_libraries(ArtheusWeb SDL2 SDL2_ttf SDL2_image sfml-system sfml-network)
