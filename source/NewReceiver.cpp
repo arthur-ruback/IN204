@@ -6,7 +6,6 @@ const int MAX_CHARACTER = 15;
 const int NORMAL = 1;
 
 NewReceiver::NewReceiver(std::string fontPath, std::string imagesPath) : State(fontPath){
-    confirmNewChat = false;
     pathImages = imagesPath;
 }
 
@@ -137,15 +136,15 @@ int NewReceiver::execute(){
         }    
     }
 
+    if (!confirmNewChat){
+        nameUser = "";
+    }
+
     // Libere os recursos utilizados pela biblioteca SDL2
     SDL_DestroyRenderer(rendererAdd);
     SDL_DestroyWindow(windowAdd);
     SDL_Quit();
 
-    return MAIN_MENU;
+    return global::MAINMENU;
 
-}
-
-bool NewReceiver::getConfirmNewChat(){
-    return confirmNewChat;
 }

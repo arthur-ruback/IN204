@@ -1,12 +1,4 @@
-#include <iostream>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 #include "MainMenu.hpp"
-#include "Button.hpp"
-#include "chat.hpp"
-
-const int CHAT = 2;
-const int NEWRECEIVER = 3;
 
 MainMenu::MainMenu(std::vector<ButtonChat*> *_chats, std::string fontPath, std::string imagesPath) : chats(_chats), State(fontPath) {
     pathImages = imagesPath;
@@ -35,15 +27,19 @@ int MainMenu::execute(){
     SDL_Rect buttonHeaderRect = buttonHeader->getButtonRect();
 
     //MONTAR CHATS (BOTOES)
-    if (createNewChat){
+    if (nameUser != ""){
         addNewChat(window, ren);
-        updateChats(window, ren, chats->back()->getTexture());
         nbChats += 1;
-        createNewChat = false;
+        updateChats(window, ren, chats->back()->getTexture());
+        nameUser = "";
+    } else{
+        SDL_Surface * newButtonSurface = IMG_Load(std::string(pathImages+"profileChat.png").c_str());
+        SDL_Texture * newButtonTexture = SDL_CreateTextureFromSurface(ren, newButtonSurface);
+        updateChats(window, ren, newButtonTexture);
     }
 
     //MONTAR ESPACO BRANCO SEM CHAT
-    SDL_Rect conversasRect = {0, 162+nbChats*92, 563, 774-nbChats*92};
+    SDL_Rect conversasRect = {0, 0, 563, 844};
 
     while (running){
         SDL_Event event;
@@ -67,7 +63,6 @@ int MainMenu::execute(){
                     }
                     if (SDL_PointInRect(&mousePoint, &buttonHeaderRect)) {
                         buttonNewChat = true;
-                        //createNewChat = true;
                         //printf("Header pressionado!\n");
                         running = false;
                     }
@@ -75,6 +70,10 @@ int MainMenu::execute(){
             }
 
         }
+
+        //ESPACO EM BRANCO
+        SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
+        SDL_RenderFillRect(ren, &conversasRect);
 
         //CABECALHO
         SDL_RenderCopy(ren, textureHeader, NULL, &cabecalhoRect);
@@ -85,10 +84,6 @@ int MainMenu::execute(){
             i->draw();
         }
 
-        //ESPACO EM BRANCO
-        // SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
-        // SDL_RenderFillRect(ren, &conversasRect);
-
         SDL_RenderPresent(ren);
     }
     // Libere os recursos utilizados pela biblioteca SDL2
@@ -97,9 +92,9 @@ int MainMenu::execute(){
     SDL_Quit();
 
     if (buttonNewChat){
-        return NEWRECEIVER;
+        return global::NEWRECEIVER;
     } else{
-        return CHAT;
+        return global::CHAT;
     }
 
 }
@@ -113,14 +108,6 @@ void MainMenu::addNewChat(SDL_Window * window, SDL_Renderer * ren){
 void MainMenu::updateChats(SDL_Window * window, SDL_Renderer * ren, SDL_Texture* buttonTexture){
     for (auto i : *chats){
         i->setWindowRenderer(window, ren, buttonTexture);
-    }
-}
-
-void MainMenu::confirmNewChat(bool confirm){
-    if (confirm){
-        createNewChat = true;
-    } else{
-        createNewChat = false;
     }
 }
 

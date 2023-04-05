@@ -21,8 +21,6 @@ int main(int argc, char** argv){
     while (true) {
         switch (currentState) {
         case global::MAINMENU:
-            mainMenu.confirmNewChat(newReceiver.getConfirmNewChat());
-            mainMenu.setNameUser(newReceiver.getNameUser());
             currentState = mainMenu.execute();
             break;
         case global::CHAT:
@@ -31,9 +29,8 @@ int main(int argc, char** argv){
             break;
         case global::NEWRECEIVER:
             currentState = newReceiver.execute();
+            mainMenu.setNameUser(newReceiver.getNameUser());
             break;
-        //case global::MAKENEWCHAT:
-
         }
     }
     

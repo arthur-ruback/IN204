@@ -7,6 +7,7 @@
 #include <SDL2/SDL_ttf.h>
 #include "State.hpp"
 #include "Button.hpp"
+#include "globals.hpp"
 
 class NewReceiver : public State {
     private:
@@ -18,7 +19,6 @@ class NewReceiver : public State {
         NewReceiver(std::string,std::string);
         virtual ~NewReceiver();
         int execute();
-        bool getConfirmNewChat();
 };
 
 
