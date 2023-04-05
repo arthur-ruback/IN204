@@ -54,6 +54,7 @@ int MainMenu::execute(Socket* outbound){
     SDL_Rect conversasRect = {0, 0, 563, 844};
 
     while (running && nextState == global::MAINMENU){
+
         nbChats = chats->size();
         SDL_Event event;
         while (SDL_PollEvent(&event)){

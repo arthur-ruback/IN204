@@ -50,16 +50,31 @@ void recvThread(std::vector<ButtonChat*> *chats, std::string ip, std::string use
         if(foundChat == false){
             // needs name of chatter, is gonna demand the server
             std::string name = inbound.getUsernameFromServer(recvMsg.sender);
-
+            // if name is valid
             if(name != std::string()){
-                // now that has it, create client
-                Chat * newChat = new Chat(std::string(global::pathToFont), name);
-                ButtonChat *newButtonChat = new ButtonChat(NULL, NULL, 0, 0, global::pathToFont, std::string(global::pathToImgs+"profileChat.png"), name, newChat);
-                chats->push_back(newButtonChat);
-                chats->back()->getChat()->addMessage(Message(recvMsg.content, name));
-                std::cout << "Adding to new chat:" << chats->back()->getUserName() << std::endl;
-                idToUsername[recvMsg.sender] = name;
-                usernameToId[name] = recvMsg.sender;
+                // it could de that it has the chat but its just not mapped correctly so needs to search for name of chat
+                // and if that's the case, add reference to so
+                bool foundChat = false;
+                for (auto i : *chats){
+                    // chat already exists and add msg
+                    if(i->getUserName() == name) {
+                        i->getChat()->addMessage(Message(recvMsg.content, i->getUserName()));
+                        foundChat = true;
+                        std::cout << "Adding to existing chat:" << i->getUserName() << "\" number " << recvMsg.sender << std::endl;
+                        idToUsername[recvMsg.sender] = name;
+                        break;
+                    }
+                }
+                if(foundChat == false){
+                    // now that has it, create client
+                    Chat * newChat = new Chat(std::string(global::pathToFont), name);
+                    ButtonChat *newButtonChat = new ButtonChat(NULL, NULL, 0, 0, global::pathToFont, std::string(global::pathToImgs+"profileChat.png"), name, newChat);
+                    chats->push_back(newButtonChat);
+                    chats->back()->getChat()->addMessage(Message(recvMsg.content, name));
+                    std::cout << "Adding to new chat:" << chats->back()->getUserName() << std::endl;
+                    idToUsername[recvMsg.sender] = name;
+                    usernameToId[name] = recvMsg.sender;
+                }
             }else{
                 std::cout << "Got bad reponse from server" << std::endl;
             }
