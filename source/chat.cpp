@@ -89,7 +89,7 @@ void Chat::scrollMessages(int& yOffset, int heightMsgs, int amount) {
     }
 }
 
-int Chat::execute(){
+int Chat::execute(Socket* outbound, std::map<std::string,int> *usernameToId){
     bool quit = false;
     SDL_Event event;
     int yOffset = 0;
@@ -116,6 +116,7 @@ int Chat::execute(){
                 break;
             }
             else if (event.type == SDL_MOUSEWHEEL) {
+                msgContainer->updateFontRenderer(fontNormal, fontSmall, renderer);
                 scrollMessages(yOffset, msgContainer->getTotalHeight(), event.wheel.y);
                 flagRenderText = true;
             }
@@ -124,6 +125,7 @@ int Chat::execute(){
                     SCREEN_WIDTH = event.window.data1;
                     SCREEN_HEIGHT = event.window.data2;
                     MAX_MSG_WIDTH = SCREEN_WIDTH * 0.8 - 2 * global::SIDE_SPACCING;
+                    msgContainer->updateFontRenderer(fontNormal, fontSmall, renderer);
                     msgContainer->updateWidthMax(MAX_MSG_WIDTH);
                     scrollMessages(yOffset, msgContainer->getTotalHeight());
                     flagRenderText = true;
@@ -164,9 +166,26 @@ int Chat::execute(){
                         std::ostringstream min;
                         min << std::setw(2) << std::setfill('0') << timeinfo->tm_min;
                         // add message to list
+                        msgContainer->updateFontRenderer(fontNormal, fontSmall, renderer);
                         int offset = msgContainer->append(Message(inputText,std::string("Me"),hour.str(),min.str())) + global::V_SPACING;
+                        // send message through network
+                        // id doesnt know the id, get from server
+                        if ((*usernameToId)[whoImTalkingTo] == 0){
+                            int who = outbound->getIDFromServer(whoImTalkingTo);
+                            if (who == 0){
+                                std::cout << "Error, message not sent, couldnt get to the client, maybe the name is wrong? Check CAPSLOCK" << std::endl;
+                            }else{
+                                (*usernameToId)[whoImTalkingTo] = who;
+                                std::cout << "Pegeui o ID, eh " << (*usernameToId)[whoImTalkingTo] << who << std::endl;
+                            }
+                        }
+
+                        std::cout << "id from " << whoImTalkingTo << " to send: " << (*usernameToId)[whoImTalkingTo] << std::endl;
+                        outbound->send((*usernameToId)[whoImTalkingTo],inputText);
+
                         inputText.clear();
                         inputText += "> ";
+
                         // screen filled with messages
                         if (msgContainer->getTotalHeight() >= SCREEN_HEIGHT - TEXT_BOX_HEIGHT - global::HEADER_HEIGHT - global::V_SPACING)
                             yOffset -= offset;

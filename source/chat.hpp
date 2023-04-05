@@ -15,6 +15,7 @@
 #include "common.hpp"
 #include "State.hpp"
 #include "Button.hpp"
+#include "Socket.hpp"
 
 // WARNING, depends heavely on constants defined in globals.hpp
 #include "globals.hpp"
@@ -29,7 +30,7 @@ class Chat : public State {
         Chat(std::string fontPath, std::string receiver);
         ~Chat();
         void addMessage(Message);
-        int execute();
+        int execute(Socket*, std::map<std::string,int>*);
     private:
         void renderMessages(int);
         void scrollMessages(int&, int, int amount=0);

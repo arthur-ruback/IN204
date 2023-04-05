@@ -17,7 +17,10 @@ void MsgContainer::updateHeight(){
     }
 }
 
-int MsgContainer::getTotalHeight(){return totalHeight;}
+int MsgContainer::getTotalHeight(){
+    updateHeight();
+    return totalHeight;
+}
 
 int MsgContainer::append(Message msg){
     _container.push_back(msg);
@@ -34,4 +37,10 @@ std::vector<Message>::const_iterator MsgContainer::getReadBeginIterator(){
 
 std::vector<Message>::const_iterator MsgContainer::getReadEndIterator(){
     return _container.cend();
+}
+
+void MsgContainer::updateFontRenderer(TTF_Font* newFontNormal, TTF_Font* newFontSmall, SDL_Renderer* newRenderer){
+    fontNormal = newFontNormal;
+    fontSmall = newFontSmall;
+    renderer = newRenderer;
 }

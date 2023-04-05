@@ -28,6 +28,7 @@ class MsgContainer {
         MsgContainer(std::function<int(const std::string&, unsigned, TTF_Font*, SDL_Renderer*)>, TTF_Font*, TTF_Font*, SDL_Renderer*, int);
         int append(Message);
         void updateWidthMax(int);
+        void updateFontRenderer(TTF_Font* newFontNormal, TTF_Font* newFontSmall, SDL_Renderer* newRenderer);
 };
 
 #endif /* MSGCONTAINER_H */

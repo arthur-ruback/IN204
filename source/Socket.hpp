@@ -21,4 +21,7 @@ class Socket {
         ~Socket();
         int send(unsigned destID, std::string msg);
         MessageNet recv();
+        std::string getUsernameFromServer(int);
+        int getIDFromServer(std::string);
+        int getID();
 };

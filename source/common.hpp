@@ -41,6 +41,10 @@ namespace debugging
 #define MSG_LINK_REP 4
 #define MSG_ERROR    5
 #define MSG_OK       6
+#define MSG_WHOID_REQ  7
+#define MSG_WHOID_REP  8
+#define MSG_WHOUSER_REQ  9
+#define MSG_WHOUSER_REP  10
 
 #define EMITTER 0
 #define RECIEVER 1

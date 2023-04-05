@@ -1,5 +1,6 @@
 #include <iostream>
 #include <thread>
+#include <map>
 #include "MainMenu.hpp"
 #include "chat.hpp"
 #include "NewReceiver.hpp"
@@ -16,8 +17,16 @@ using namespace std;
 std::vector<ButtonChat*> chats;
 bool globalRun;
 
+Socket* outbound;
+
+std::map<int,std::string> idToUsername;
+std::map<std::string,int> usernameToId;
+
 void recvThread(std::vector<ButtonChat*> *chats, std::string ip, std::string username){
     Socket inbound(ip, SERVERPORT, NOIDYET, RECIEVER, username);
+    // link sockets
+    outbound = new Socket(ip, SERVERPORT, NOIDYET, EMITTER, username, inbound.getID());
+    std::cout << "socket created in thread" << std::endl;
     MessageNet recvMsg;
     while(globalRun){
         recvMsg = inbound.recv();
@@ -29,24 +38,34 @@ void recvThread(std::vector<ButtonChat*> *chats, std::string ip, std::string use
         bool foundChat = false;
         // look for chat with specified name
         for (auto i : *chats){
-            // TODO: translate id to username
             // chat already exists and add msg
-            if(i->getUserName() == to_string(recvMsg.sender)) {
-                i->getChat()->addMessage(Message(recvMsg.content, to_string(recvMsg.sender)));
+            if(i->getUserName() == idToUsername[recvMsg.sender]) {
+                i->getChat()->addMessage(Message(recvMsg.content, i->getUserName()));
                 foundChat = true;
-                std::cout << "Adding to existing chat:" << i->getUserName() << std::endl;
+                std::cout << "Adding to existing chat:" << i->getUserName() << "\" number " << recvMsg.sender << std::endl;
                 break;
             }
         }
         // chat doenst exist yet and needs to create it
         if(foundChat == false){
-            Chat * newChat = new Chat(std::string(global::pathToFont), to_string(recvMsg.sender));
-            ButtonChat *newButtonChat = new ButtonChat(NULL, NULL, 0, 0, global::pathToFont, std::string(global::pathToImgs+"profileChat.png"), to_string(recvMsg.sender), newChat);
-            chats->push_back(newButtonChat);
-            chats->back()->getChat()->addMessage(Message(recvMsg.content, to_string(recvMsg.sender)));
-            std::cout << "Adding to new chat:" << chats->back()->getUserName() << std::endl;
+            // needs name of chatter, is gonna demand the server
+            std::string name = inbound.getUsernameFromServer(recvMsg.sender);
+
+            if(name != std::string()){
+                // now that has it, create client
+                Chat * newChat = new Chat(std::string(global::pathToFont), name);
+                ButtonChat *newButtonChat = new ButtonChat(NULL, NULL, 0, 0, global::pathToFont, std::string(global::pathToImgs+"profileChat.png"), name, newChat);
+                chats->push_back(newButtonChat);
+                chats->back()->getChat()->addMessage(Message(recvMsg.content, name));
+                std::cout << "Adding to new chat:" << chats->back()->getUserName() << std::endl;
+                idToUsername[recvMsg.sender] = name;
+                usernameToId[name] = recvMsg.sender;
+            }else{
+                std::cout << "Got bad reponse from server" << std::endl;
+            }
         }
     }
+    delete outbound;
     DEBUG("Thread receiving ended");
 }
 
@@ -69,7 +88,7 @@ int main(int argc, char** argv){
         } else if(currentState == global::CHAT){
             std::cout << "Entering chat" << std::endl;
             chat = mainMenu.getChatSelected();
-            currentState = chat->execute();
+            currentState = chat->execute(outbound, &usernameToId);
         } else if(currentState == global::NEWRECEIVER){
             std::cout << "Entering newreceiver" << std::endl;
             currentState = newReceiver.execute();
@@ -79,7 +98,6 @@ int main(int argc, char** argv){
             currentState = login.execute();
             DEBUG("at the end of login");
             if(currentState == global::MAINMENU){
-                DEBUG("Here");
                 threadRecv = new std::thread(recvThread, &chats, std::string(argv[1]),login.getUserName());
             }
             mainMenu.setUserName(login.getUserName());

@@ -13,10 +13,27 @@ bool existsClientId(std::list<ClientData> &clients, int id){
 }
 
 ClientData* findClientById(std::list<ClientData> &clients, int id){
-    for (auto & client: clients){
+    //TODO:remove
+    for (auto & client: clients)
+        std::cout << client.id << " " << client.userName << std::endl;
+    // returns preferabli EMITTER
+    for (auto & client: clients)
+        if(client.id == id && client.type == EMITTER)
+            return &client;
+    for (auto & client: clients)
         if(client.id == id)
             return &client;
-    }
+    return NULL;
+}
+
+ClientData* findClientByUser(std::list<ClientData> &clients, std::string user){
+    // returns preferabli EMITTER
+    for (auto & client: clients)
+        if(client.userName == user && client.type == EMITTER)
+            return &client;
+    for (auto & client: clients)
+        if(client.userName == user)
+            return &client;
     return NULL;
 }
 
@@ -145,10 +162,11 @@ int main(){
                                             clientData = findClientById(clients,(*clientData).link);
                                         (*clientData).socket->send(packet);
                                         std::cout << "Relaying msg to " << toRead.dest << std::endl;
+                                        // send ok to send
                                         toSend.msgType = MSG_OK;
                                         toSend.sender = SERVER_ID;
                                         toSend.dest = (*client).id;
-                                        toSend.content = std::string();
+                                        toSend.content = std::string("Done");
                                         packet.clear();
                                         packet << toSend;
                                         ((*client).socket)->send(packet);
@@ -165,6 +183,37 @@ int main(){
                                     packet << toSend;
                                     ((*client).socket)->send(packet);
                             
+                                }else if(toRead.msgType == MSG_WHOID_REQ){
+                                    toSend.msgType = MSG_WHOID_REP;
+                                    toSend.sender = SERVER_ID;
+                                    toSend.dest = (*client).id;
+                                    ClientData* who = findClientById(clients, stoi(toRead.content));
+                                    if (who == NULL)
+                                        toSend.content = std::string("NONE");
+                                    else
+                                        toSend.content = who->userName;
+                                    
+                                    packet.clear();
+                                    packet << toSend;
+                                    std::cout << "Awnsering request to name" << std::endl;
+                                    std::cout << toSend << std::endl;
+                                    ((*client).socket)->send(packet);
+
+                                }else if(toRead.msgType == MSG_WHOUSER_REQ){
+                                    toSend.msgType = MSG_WHOUSER_REP;
+                                    toSend.sender = SERVER_ID;
+                                    toSend.dest = (*client).id;
+                                    ClientData* who = findClientByUser(clients, toRead.content);
+                                    if (who == NULL)
+                                        toSend.content = std::string();
+                                    else
+                                        toSend.content = std::to_string(who->id);
+                                    
+                                    packet.clear();
+                                    packet << toSend;
+                                    std::cout << "Awnsering request to ID" << std::endl;
+                                    std::cout << toSend << std::endl;
+                                    ((*client).socket)->send(packet);
                                 }
                             }
                             else{

@@ -13,7 +13,7 @@ class State{
     public:
         State(std::string fontPath);
         virtual ~State();
-        virtual int execute() = 0;
+        int execute();
         std::string getReceiverName();
         void setReceiverName(std::string newName);
         std::string getUserName();

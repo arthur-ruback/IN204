@@ -121,9 +121,20 @@ int MainMenu::execute(){
 }
 
 void MainMenu::addNewChat(SDL_Window * window, SDL_Renderer * ren){
-    Chat * newChat = new Chat(std::string(global::pathToFont), receiverName);
-    ButtonChat *newBottonChat = new ButtonChat(window, ren, 0, 70+nbChats*92, global::pathToFont, std::string(pathImages+"profileChat.png"), receiverName, newChat);
-    chats->push_back(newBottonChat);
+    // look for existing chat
+    bool flagFound = false;
+    for(auto i: *chats)
+        if(i->getUserName()==receiverName){
+            flagFound = true;
+            break;
+        }
+    
+    // did not find it, adding
+    if(!flagFound){
+        Chat * newChat = new Chat(std::string(global::pathToFont), receiverName);
+        ButtonChat *newBottonChat = new ButtonChat(window, ren, 0, 70+nbChats*92, global::pathToFont, std::string(pathImages+"profileChat.png"), receiverName, newChat);
+        chats->push_back(newBottonChat);
+    }
 }
 
 void MainMenu::updateChats(SDL_Window * window, SDL_Renderer * ren, SDL_Texture* buttonTexture, int x, int yOffset){

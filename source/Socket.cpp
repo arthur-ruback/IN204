@@ -40,6 +40,8 @@ Socket::Socket(std::string ip, unsigned port, unsigned _myID, int type, std::str
             toSend << linkMsg;
             std::cout << "Sending: " << linkMsg << std::endl;
             socket.send(toSend);
+            //TODO: verifi
+            socket.receive(toRecv);
         }
     } else {
         std::cout << "Invalid socket, no operation will be made" << std::endl;
@@ -123,4 +125,70 @@ MessageNet Socket::recv(){
 
     
     
+}
+
+std::string Socket::getUsernameFromServer(int idWho){
+    socket.setBlocking(true);
+    if(!validSocket){
+        std::cout << "Invalid socket, no operation will be made" << std::endl;
+        return std::string();
+    }
+
+    sendMsg.msgType = MSG_WHOID_REQ;
+    sendMsg.sender = myID;
+    
+    sendMsg.dest = SERVER_ID;
+    sendMsg.content = std::to_string(idWho);
+    
+    toSend.clear();
+    toSend << sendMsg;
+    std::cout << "Sending: " << sendMsg << std::endl;
+    socket.send(toSend);
+
+    toRecv.clear();
+    socket.receive(toRecv);
+    toRecv >> recvMsg;
+    std::cout << "Recieved: " << recvMsg << std::endl;
+    if (recvMsg.sender != 0 || recvMsg.msgType != MSG_WHOID_REP || recvMsg.dest != myID){
+        std::cout << "Error: " << recvMsg.content << std::endl;
+    }
+    if(myType == RECIEVER)
+        socket.setBlocking(false);
+    return recvMsg.content;
+}
+
+int Socket::getID(){
+    return myID;
+}
+
+int Socket::getIDFromServer(std::string who){
+    socket.setBlocking(true);
+    if(!validSocket){
+        std::cout << "Invalid socket, no operation will be made" << std::endl;
+        return 0;
+    }
+
+    sendMsg.msgType = MSG_WHOUSER_REQ;
+    sendMsg.sender = myID;
+    
+    sendMsg.dest = SERVER_ID;
+    sendMsg.content = who;
+    
+    toSend.clear();
+    toSend << sendMsg;
+    std::cout << "Sending: " << sendMsg << std::endl;
+    socket.send(toSend);
+
+    toRecv.clear();
+    socket.receive(toRecv);
+    MessageNet reponse;
+    toRecv >> reponse;
+    std::cout << "Recieved: " << reponse << std::endl;
+    if (reponse.sender != 0 || reponse.msgType != MSG_WHOUSER_REP || reponse.dest != myID){
+        std::cout << "Error: " << reponse.content << std::endl;
+    }
+    std::cout<<"eh bem aqui"<<std::endl;
+    if(myType == RECIEVER)
+        socket.setBlocking(false);
+    return stoi(reponse.content);
 }
