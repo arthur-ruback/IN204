@@ -16,8 +16,8 @@ using namespace std;
 std::vector<ButtonChat*> chats;
 bool globalRun;
 
-void recvThread(std::vector<ButtonChat*> *chats){
-    Socket inbound("127.0.0.1", SERVERPORT, 2, RECIEVER);
+void recvThread(std::vector<ButtonChat*> *chats, std::string ip, std::string username){
+    Socket inbound(ip, SERVERPORT, NOIDYET, RECIEVER, username);
     MessageNet recvMsg;
     while(globalRun){
         recvMsg = inbound.recv();
@@ -80,7 +80,7 @@ int main(int argc, char** argv){
             DEBUG("at the end of login");
             if(currentState == global::MAINMENU){
                 DEBUG("Here");
-                threadRecv = new std::thread(recvThread, &chats);
+                threadRecv = new std::thread(recvThread, &chats, std::string(argv[1]),login.getUserName());
             }
             mainMenu.setUserName(login.getUserName());
         } else if(currentState == global::DIE){

@@ -1,6 +1,6 @@
 #include "Socket.hpp"
 
-Socket::Socket(std::string ip, unsigned port, unsigned myID, int type, unsigned link) : myID(myID), myType(type){
+Socket::Socket(std::string ip, unsigned port, unsigned _myID, int type, std::string userName, unsigned link) : myID(_myID), myType(type), userName(userName){
 
     // socket creation
     sf::Socket::Status status = socket.connect(ip, port);
@@ -14,7 +14,7 @@ Socket::Socket(std::string ip, unsigned port, unsigned myID, int type, unsigned 
 
     if(validSocket){
         // Server handshake
-        MessageNet authMsg = {MSG_CONX_REQ, myID, SERVER_ID, std::to_string(myType)};
+        MessageNet authMsg = {MSG_CONX_REQ, myID, SERVER_ID, std::to_string(myType)+userName};
         toSend << authMsg;
         std::cout << "Sending: " << authMsg << std::endl;
         socket.send(toSend);
@@ -22,10 +22,16 @@ Socket::Socket(std::string ip, unsigned port, unsigned myID, int type, unsigned 
         socket.receive(toRecv);
         toRecv >> recvMsg;
         std::cout << "Recieved: " << recvMsg << std::endl;
-        if (recvMsg.sender != 0 || recvMsg.msgType != MSG_CONX_REP || recvMsg.dest != myID || recvMsg.content.compare("Aproved")){
+        if (recvMsg.sender != 0 || recvMsg.msgType != MSG_CONX_REP || recvMsg.content.compare("Aproved")){
             std::cout << "Connection refused by server" << std::endl;
             validSocket = false;
         }   
+
+        // gets ID from server
+        if(myID == NOIDYET){
+            myID = recvMsg.dest;
+            std::cout << "got my id! : " << myID << std::endl;
+        }
 
         // Link to another client?
         if(link && myType == EMITTER){
@@ -66,7 +72,7 @@ int Socket::send(unsigned destID, std::string msg){
     
     toSend.clear();
     toSend << sendMsg;
-    std::cout << sendMsg << std::endl;
+    std::cout << "Sending: " << sendMsg << std::endl;
     socket.send(toSend);
 
     socket.receive(toRecv);

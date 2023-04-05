@@ -15,8 +15,9 @@ class Socket {
         bool validSocket;
         unsigned myID;
         int myType;
+        std::string userName;
     public:
-        Socket(std::string ip, unsigned port, unsigned myID, int type, unsigned link = 0);
+        Socket(std::string ip, unsigned port, unsigned myID, int type, std::string userName, unsigned link = 0);
         ~Socket();
         int send(unsigned destID, std::string msg);
         MessageNet recv();

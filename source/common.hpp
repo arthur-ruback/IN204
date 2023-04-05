@@ -54,6 +54,7 @@ struct ClientData {
     unsigned id;
     bool type;
     unsigned link;
+    std::string userName;
 };
 
 struct MessageNet

@@ -8,12 +8,12 @@
 
 int main()
 {
-    Socket socket("127.0.0.1", SERVERPORT, 1, EMITTER);
+    Socket socket("127.0.0.1", SERVERPORT, NOIDYET, EMITTER,"EmissorTeste");
     int aux;
     while (true)
     {
         std::cin >> aux;
-        socket.send(2, std::string("Essa eh pro 2"));
+        socket.send(1, std::string("Essa eh pro 1"));
         /* code */
     }
     

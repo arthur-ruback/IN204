@@ -20,6 +20,12 @@ ClientData* findClientById(std::list<ClientData> &clients, int id){
     return NULL;
 }
 
+int getFreeId(std::list<ClientData> &clients){
+    for(int i = 1; i < NOIDYET; i++)
+        if (!existsClientId(clients,i))
+            return i;
+}
+
 int main(){
     sf::TcpListener listener;
 
@@ -45,7 +51,7 @@ int main(){
                 sf::TcpSocket* sock = new sf::TcpSocket;
                 if (listener.accept(*sock) == sf::Socket::Done)
                 {
-                    ClientData aux = {NULL, 0, 0, 0};
+                    ClientData aux = {NULL, 0, 0, 0, std::string()};
                     aux.socket = sock;
                     // Add the new client to the clients list
                     clients.push_back(aux);
@@ -87,12 +93,18 @@ int main(){
                                         client = clients.erase(client);
                                         client--;
                                     }else{
+                                        // first connection of someone and is demanding an ID
+                                        if(toRead.sender == NOIDYET){
+                                            (*client).id = getFreeId(clients);
+                                        }else{
+                                            (*client).id = toRead.sender;
+                                        }
 
                                         // TODO: Authenticate
-                                        (*client).id = toRead.sender;
                                         int aux = 0;
-                                        (*client).type = std::stoi(toRead.content);
-
+                                        (*client).type = std::stoi(std::to_string(toRead.content[0]));
+                                        toRead.content.erase(0,1);
+                                        (*client).userName = toRead.content;
                                     
 
                                         toSend.msgType = MSG_CONX_REP;
@@ -103,7 +115,7 @@ int main(){
                                         packet << toSend;
 
                                         ((*client).socket)->send(packet);
-                                        std::cout << "Admited " << (*client).id << " as " << (((*client).type)? "reciever" : "emitter") << std::endl;
+                                        std::cout << "Admited " << (*client).id << " as " << (((*client).type)? "reciever" : "emitter") << std::endl << "AKA:" << (*client).userName << std::endl;
                                     }
                                 }else if(toRead.msgType == MSG_STD){
                                     ClientData *clientData = findClientById(clients,toRead.dest);
