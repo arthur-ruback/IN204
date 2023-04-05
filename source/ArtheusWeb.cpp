@@ -9,9 +9,10 @@
 #include "globals.hpp"
 #include "Socket.hpp"
 
+//#define DEBUG_MAIN
+
 using namespace std;
 
-//TODO: mutex for variables
 std::vector<ButtonChat*> chats;
 bool globalRun;
 
@@ -47,7 +48,9 @@ void recvThread(std::vector<ButtonChat*> *chats, std::string ip, std::string use
             if(i->getUserName() == idToUsername[recvMsg.sender]) {
                 i->getChat()->addMessage(Message(recvMsg.content, i->getUserName(),hour.str(),min.str()));
                 foundChat = true;
+                #ifdef DEBUG_MAIN
                 std::cout << "Adding to existing chat:" << i->getUserName() << "\" number " << recvMsg.sender << std::endl;
+                #endif
                 break;
             }
         }
@@ -65,7 +68,9 @@ void recvThread(std::vector<ButtonChat*> *chats, std::string ip, std::string use
                     if(i->getUserName() == name) {
                         i->getChat()->addMessage(Message(recvMsg.content, i->getUserName(),hour.str(),min.str()));
                         foundChat = true;
+                        #ifdef DEBUG_MAIN
                         std::cout << "Adding to existing chat:" << i->getUserName() << "\" number " << recvMsg.sender << std::endl;
+                        #endif
                         idToUsername[recvMsg.sender] = name;
                         break;
                     }
@@ -76,17 +81,18 @@ void recvThread(std::vector<ButtonChat*> *chats, std::string ip, std::string use
                     ButtonChat *newButtonChat = new ButtonChat(NULL, NULL, 0, 0, global::pathToFont, std::string(global::pathToImgs+"profileChat.png"), name, newChat);
                     chats->push_back(newButtonChat);
                     chats->back()->getChat()->addMessage(Message(recvMsg.content, name,hour.str(),min.str()));
+                    #ifdef DEBUG_MAIN
                     std::cout << "Adding to new chat:" << chats->back()->getUserName() << std::endl;
+                    #endif
                     idToUsername[recvMsg.sender] = name;
                     usernameToId[name] = recvMsg.sender;
                 }
             }else{
-                std::cout << "Got bad reponse from server" << std::endl;
+                std::cerr << "Got bad reponse from server" << std::endl;
             }
         }
     }
     delete outbound;
-    DEBUG("Thread receiving ended");
 }
 
 int main(int argc, char** argv){
