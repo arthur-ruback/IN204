@@ -3,7 +3,7 @@
 #include <list>
 #include "common.hpp"
 
-#define ENABLE_DEBUG_SERVER_SERVER
+//#define ENABLE_DEBUG_SERVER
 
 std::string getHostname() {
     std::string result = "";

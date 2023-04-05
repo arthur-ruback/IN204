@@ -11,8 +11,6 @@
 
 using namespace std;
 
-#define ENABLE_DEBUG
-
 //TODO: mutex for variables
 std::vector<ButtonChat*> chats;
 bool globalRun;
@@ -96,33 +94,29 @@ int main(int argc, char** argv){
     int currentState = global::LOGIN;
     
     while (globalRun) {
-        std::cout << "in switch " << currentState << std::endl;
-        if(currentState == global::MAINMENU){
-            std::cout << "Entering main menu" << std::endl;
+        switch (currentState)
+        {
+        case global::MAINMENU:
             currentState = mainMenu.execute(outbound);
-        } else if(currentState == global::CHAT){
-            std::cout << "Entering chat" << std::endl;
+            break;
+        case global::CHAT:
             chat = mainMenu.getChatSelected();
             currentState = chat->execute(outbound, &usernameToId);
-        } else if(currentState == global::NEWRECEIVER){
-            std::cout << "Entering newreceiver" << std::endl;
+            break;
+        case global::NEWRECEIVER:
             currentState = newReceiver.execute();
             mainMenu.setReceiverName(newReceiver.getReceiverName());
-        } else if(currentState == global::LOGIN){
-            std::cout << "Entering login" << std::endl;
+            break;
+        case global::LOGIN:
             currentState = login.execute();
-            DEBUG("at the end of login");
-            if(currentState == global::MAINMENU){
+            // initialization
+            if(currentState == global::MAINMENU)
                 threadRecv = new std::thread(recvThread, &chats, std::string(argv[1]),login.getUserName());
-            }
             mainMenu.setUserName(login.getUserName());
-        } else if(currentState == global::DIE){
-            std::cout << "dieing.." << std::endl;
+            break;
+        default:
             globalRun = false;
-            std::cout << "dieing.." << std::endl;
-        } else {
-            globalRun = false;
-        std::cout << "end of switch" << std::endl;
+            break;
         }
     }
     
@@ -130,6 +124,5 @@ int main(int argc, char** argv){
         threadRecv->join();
         delete threadRecv;
     }
-    std::cout << "bye" << std::endl;
     return 0;
 }
