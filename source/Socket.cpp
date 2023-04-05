@@ -181,14 +181,16 @@ int Socket::getIDFromServer(std::string who){
 
     toRecv.clear();
     socket.receive(toRecv);
-    MessageNet reponse;
-    toRecv >> reponse;
-    std::cout << "Recieved: " << reponse << std::endl;
-    if (reponse.sender != 0 || reponse.msgType != MSG_WHOUSER_REP || reponse.dest != myID){
-        std::cout << "Error: " << reponse.content << std::endl;
+    toRecv >> recvMsg;
+    std::cout << "Recieved: " << recvMsg << std::endl;
+    if (recvMsg.sender != 0 || recvMsg.msgType != MSG_WHOUSER_REP || recvMsg.dest != myID){
+        std::cout << "Error: " << recvMsg.content << std::endl;
     }
     std::cout<<"eh bem aqui"<<std::endl;
     if(myType == RECIEVER)
         socket.setBlocking(false);
-    return stoi(reponse.content);
+    if (recvMsg.content.size())
+        return stoi(recvMsg.content);
+    else
+        return 0;
 }

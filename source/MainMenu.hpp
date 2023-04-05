@@ -25,7 +25,7 @@ class MainMenu : public State{
         virtual ~MainMenu();
         void addNewChat(SDL_Window * window, SDL_Renderer * ren);
         void updateChats(SDL_Window * window, SDL_Renderer * ren, SDL_Texture* buttonTexture, int x, int y);
-        int execute();
+        int execute(Socket* outbound);
         Chat * getChatSelected();
 };
 

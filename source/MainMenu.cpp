@@ -9,7 +9,7 @@ MainMenu::MainMenu(std::vector<ButtonChat*> *_chats, std::string fontPath, std::
 
 MainMenu::~MainMenu() {}
 
-int MainMenu::execute(){
+int MainMenu::execute(Socket* outbound){
 
     unsigned lastRender = SDL_GetTicks();
     nbChats = chats->size();
@@ -35,9 +35,14 @@ int MainMenu::execute(){
 
     //MONTAR CHATS (BOTOES)
     if (receiverName != ""){
-        addNewChat(window, ren);
-        nbChats = chats->size();
-        updateChats(window, ren, chats->back()->getTexture(), 0, 70+nbChats*92);
+        int rep = outbound->getIDFromServer(receiverName);
+        // client exists
+        if(rep != 0){
+            addNewChat(window, ren);
+            nbChats = chats->size();
+            updateChats(window, ren, chats->back()->getTexture(), 0, 70+nbChats*92);
+        }else
+            std::cout << "Client does not Exist" << std::endl;
         receiverName = "";
     } else{
         SDL_Surface * newButtonSurface = IMG_Load(std::string(pathImages+"profileChat.png").c_str());

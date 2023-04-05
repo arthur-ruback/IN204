@@ -12,7 +12,7 @@ namespace global{
     const int FONT_SMALL_SIZE = 20;
     const int SCROLL_SPEED = 10;
     const int WINDOW_PADDING = 10;
-    const int SIDE_SPACCING = 80;
+    const int SIDE_SPACCING = 10;
     const int V_SPACING = 5;
     const int INIT_TEXT_BOX_HEIGHT = FONT_SIZE + 2 * V_SPACING;
     const int HEADER_HEIGHT = 1.7*FONT_SIZE + 2 * V_SPACING;

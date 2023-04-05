@@ -84,7 +84,7 @@ int main(int argc, char** argv){
         std::cout << "in switch " << currentState << std::endl;
         if(currentState == global::MAINMENU){
             std::cout << "Entering main menu" << std::endl;
-            currentState = mainMenu.execute();
+            currentState = mainMenu.execute(outbound);
         } else if(currentState == global::CHAT){
             std::cout << "Entering chat" << std::endl;
             chat = mainMenu.getChatSelected();

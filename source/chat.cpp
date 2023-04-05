@@ -244,7 +244,7 @@ int Chat::execute(Socket* outbound, std::map<std::string,int> *usernameToId){
             SDL_Rect rect2 = {0,0,SCREEN_WIDTH,global::HEADER_HEIGHT};
             SDL_SetRenderDrawColor( renderer, 192, 192, 192, 255 );
             SDL_RenderFillRect( renderer, &rect2 );
-            renderText(whoImTalkingTo, global::SIDE_SPACCING, global::V_SPACING, fontBig, MAX_MSG_WIDTH, renderer);
+            renderText(whoImTalkingTo, global::SIDE_SPACCING*8, global::V_SPACING, fontBig, MAX_MSG_WIDTH, renderer);
 
             //RETURN BUTTON
             returnButton.draw();
