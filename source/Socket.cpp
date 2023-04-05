@@ -16,21 +16,21 @@ Socket::Socket(std::string ip, unsigned port, unsigned _myID, int type, std::str
         // Server handshake
         MessageNet authMsg = {MSG_CONX_REQ, myID, SERVER_ID, std::to_string(myType)+userName};
         toSend << authMsg;
-        std::cout << "Sending: " << authMsg << std::endl;
+        std::cerr << "Sending: " << authMsg << std::endl;
         socket.send(toSend);
 
         socket.receive(toRecv);
         toRecv >> recvMsg;
-        std::cout << "Recieved: " << recvMsg << std::endl;
+        std::cerr << "Recieved: " << recvMsg << std::endl;
         if (recvMsg.sender != 0 || recvMsg.msgType != MSG_CONX_REP || recvMsg.content.compare("Aproved")){
-            std::cout << "Connection refused by server" << std::endl;
+            std::cerr << "Connection refused by server" << std::endl;
             validSocket = false;
         }   
 
         // gets ID from server
         if(myID == NOIDYET){
             myID = recvMsg.dest;
-            std::cout << "got my id! : " << myID << std::endl;
+            std::cerr << "got my id! : " << myID << std::endl;
         }
 
         // Link to another client?
@@ -38,13 +38,13 @@ Socket::Socket(std::string ip, unsigned port, unsigned _myID, int type, std::str
             MessageNet linkMsg = {MSG_LINK_REQ, myID, SERVER_ID, std::to_string(link)};
             toSend.clear();
             toSend << linkMsg;
-            std::cout << "Sending: " << linkMsg << std::endl;
+            std::cerr << "Sending: " << linkMsg << std::endl;
             socket.send(toSend);
             //TODO: verifi
             socket.receive(toRecv);
         }
     } else {
-        std::cout << "Invalid socket, no operation will be made" << std::endl;
+        std::cerr << "Invalid socket, no operation will be made" << std::endl;
     }
 
     if(myType == RECIEVER)
@@ -58,11 +58,11 @@ Socket::~Socket(){
 int Socket::send(unsigned destID, std::string msg){
 
     if(!validSocket){
-        std::cout << "Invalid socket, no operation will be made" << std::endl;
+        std::cerr << "Invalid socket, no operation will be made" << std::endl;
         return -1;
     }
     if(myType != EMITTER){
-        std::cout << "Operation forbidden in this type os socket" << std::endl;
+        std::cerr << "Operation forbidden in this type os socket" << std::endl;
         return -1;
     }
 
@@ -74,13 +74,13 @@ int Socket::send(unsigned destID, std::string msg){
     
     toSend.clear();
     toSend << sendMsg;
-    std::cout << "Sending: " << sendMsg << std::endl;
+    std::cerr << "Sending: " << sendMsg << std::endl;
     socket.send(toSend);
 
     socket.receive(toRecv);
     toRecv >> recvMsg;
     if (recvMsg.sender != 0 || recvMsg.msgType != MSG_OK || recvMsg.dest != myID){
-        std::cout << "Error: " << recvMsg.content << std::endl;
+        std::cerr << "Error: " << recvMsg.content << std::endl;
     }
     return 0;
 }
@@ -89,34 +89,33 @@ MessageNet Socket::recv(){
     sf::Socket::Status status;
 
     if(!validSocket){
-        std::cout << "Invalid socket, no operation will be made" << std::endl;
+        std::cerr << "Invalid socket, no operation will be made" << std::endl;
         return MessageNet();
     }
 
     if(myType != RECIEVER){
-        std::cout << "Operation forbidden in this type os socket" << std::endl;
+        std::cerr << "Operation forbidden in this type os socket" << std::endl;
         return MessageNet();
     }
     
     socket.setBlocking(false);
-    std::cout << "Joining receive loop" << std::endl;
     while(true){
         status = socket.receive(toRecv);
         // treat partial receive or disconect
         if(status ==sf::Socket::Done){
             toRecv >> recvMsg;
-            std::cout << "received full:" << recvMsg << std::endl;
+            std::cerr << "received full:" << recvMsg << std::endl;
             return recvMsg;
         } else if(status ==sf::Socket::Partial){
         //TODO: treat partial
             toRecv >> recvMsg;
-            std::cout << "received partial:" << recvMsg << std::endl;
+            std::cerr << "received partial:" << recvMsg << std::endl;
             return recvMsg;
         } else if(status ==sf::Socket::Disconnected){
-            std::cout << "Disconected" << std::endl;
+            std::cerr << "Disconected" << std::endl;
             return MessageNet();
         } else if(status ==sf::Socket::Error){
-            std::cout << "Error" << std::endl;
+            std::cerr << "Error" << std::endl;
             return MessageNet();
         } else {
         }
@@ -130,7 +129,7 @@ MessageNet Socket::recv(){
 std::string Socket::getUsernameFromServer(int idWho){
     socket.setBlocking(true);
     if(!validSocket){
-        std::cout << "Invalid socket, no operation will be made" << std::endl;
+        std::cerr << "Invalid socket, no operation will be made" << std::endl;
         return std::string();
     }
 
@@ -142,15 +141,15 @@ std::string Socket::getUsernameFromServer(int idWho){
     
     toSend.clear();
     toSend << sendMsg;
-    std::cout << "Sending: " << sendMsg << std::endl;
+    std::cerr << "Sending: " << sendMsg << std::endl;
     socket.send(toSend);
 
     toRecv.clear();
     socket.receive(toRecv);
     toRecv >> recvMsg;
-    std::cout << "Recieved: " << recvMsg << std::endl;
+    std::cerr << "Recieved: " << recvMsg << std::endl;
     if (recvMsg.sender != 0 || recvMsg.msgType != MSG_WHOID_REP || recvMsg.dest != myID){
-        std::cout << "Error: " << recvMsg.content << std::endl;
+        std::cerr << "Error: " << recvMsg.content << std::endl;
     }
     if(myType == RECIEVER)
         socket.setBlocking(false);
@@ -164,7 +163,7 @@ int Socket::getID(){
 int Socket::getIDFromServer(std::string who){
     socket.setBlocking(true);
     if(!validSocket){
-        std::cout << "Invalid socket, no operation will be made" << std::endl;
+        std::cerr << "Invalid socket, no operation will be made" << std::endl;
         return 0;
     }
 
@@ -176,17 +175,16 @@ int Socket::getIDFromServer(std::string who){
     
     toSend.clear();
     toSend << sendMsg;
-    std::cout << "Sending: " << sendMsg << std::endl;
+    std::cerr << "Sending: " << sendMsg << std::endl;
     socket.send(toSend);
 
     toRecv.clear();
     socket.receive(toRecv);
     toRecv >> recvMsg;
-    std::cout << "Recieved: " << recvMsg << std::endl;
+    std::cerr << "Recieved: " << recvMsg << std::endl;
     if (recvMsg.sender != 0 || recvMsg.msgType != MSG_WHOUSER_REP || recvMsg.dest != myID){
-        std::cout << "Error: " << recvMsg.content << std::endl;
+        std::cerr << "Error: " << recvMsg.content << std::endl;
     }
-    std::cout<<"eh bem aqui"<<std::endl;
     if(myType == RECIEVER)
         socket.setBlocking(false);
     if (recvMsg.content.size())

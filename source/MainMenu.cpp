@@ -42,7 +42,7 @@ int MainMenu::execute(Socket* outbound){
             nbChats = chats->size();
             updateChats(window, ren, chats->back()->getTexture(), 0, 70+nbChats*92);
         }else
-            std::cout << "Client does not Exist" << std::endl;
+            std::cerr << "Client does not Exist" << std::endl;
         receiverName = "";
     } else{
         SDL_Surface * newButtonSurface = IMG_Load(std::string(pathImages+"profileChat.png").c_str());
@@ -52,8 +52,6 @@ int MainMenu::execute(Socket* outbound){
 
     //MONTAR ESPACO BRANCO SEM CHAT
     SDL_Rect conversasRect = {0, 0, 563, 844};
-
-    std::cout<<"Before main loop"<<std::endl;
 
     while (running && nextState == global::MAINMENU){
         nbChats = chats->size();
@@ -74,13 +72,11 @@ int MainMenu::execute(Socket* outbound){
                         if (SDL_PointInRect(&mousePoint, &chatRect)) {
                             chatSelected = i->getChat();
                             nextState = global::CHAT;
-                            //std::cout << "Botão " << i+1 << "pressionado!\n" << std::endl;
                             running = false;
                         }
                     }
                     if (SDL_PointInRect(&mousePoint, &buttonHeaderRect)) {
                         nextState = global::NEWRECEIVER;
-                        //printf("Header pressionado!\n");
                         running = false;
                     }
                     break;

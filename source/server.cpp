@@ -13,9 +13,6 @@ bool existsClientId(std::list<ClientData> &clients, int id){
 }
 
 ClientData* findClientById(std::list<ClientData> &clients, int id){
-    //TODO:remove
-    for (auto & client: clients)
-        std::cout << client.id << " " << client.userName << std::endl;
     // returns preferabli EMITTER
     for (auto & client: clients)
         if(client.id == id && client.type == EMITTER)
@@ -97,14 +94,14 @@ int main(){
                         if (status == sf::Socket::Done)
                         {
                             if(packet >> toRead){
-                                std::cout << "SUCESS: " << toRead << std::endl;
+                                std::cerr << "SUCESS: " << toRead << std::endl;
 
                                 // Demanding connexion
                                 if(toRead.msgType == MSG_CONX_REQ){
 
                                     if(existsClientId(clients,toRead.sender)){
                                         // client claiming to be someone else
-                                        std::cout << "Disconnecting from repeated id client: " << ((*client).socket)->getRemoteAddress() << std::endl;
+                                        std::cerr << "Disconnecting from repeated id client: " << ((*client).socket)->getRemoteAddress() << std::endl;
                                         selector.remove(*((*client).socket));
                                         delete (*client).socket;
                                         client = clients.erase(client);
@@ -132,7 +129,7 @@ int main(){
                                         packet << toSend;
 
                                         ((*client).socket)->send(packet);
-                                        std::cout << "Admited " << (*client).id << " as " << (((*client).type)? "reciever" : "emitter") << std::endl << "AKA:" << (*client).userName << std::endl;
+                                        std::cerr << "Admited " << (*client).id << " as " << (((*client).type)? "reciever" : "emitter") << std::endl << "AKA:" << (*client).userName << std::endl;
                                     }
                                 }else if(toRead.msgType == MSG_STD){
                                     ClientData *clientData = findClientById(clients,toRead.dest);
@@ -145,7 +142,7 @@ int main(){
                                         packet.clear();
                                         packet << toSend;
                                         ((*client).socket)->send(packet);
-                                        std::cout << "Client " << toRead.dest << " not registered in database" << std::endl;
+                                        std::cerr << "Client " << toRead.dest << " not registered in database" << std::endl;
                                     }else if(((*clientData).type == EMITTER) && (*clientData).link == 0){
                                         // destination not adequate to recv data, return error to sender
                                         toSend.msgType = MSG_ERROR;
@@ -155,13 +152,13 @@ int main(){
                                         packet.clear();
                                         packet << toSend;
                                         ((*client).socket)->send(packet);
-                                        std::cout << "Client " << toRead.dest << " is not a reciever nor is linked to one" << std::endl;
+                                        std::cerr << "Client " << toRead.dest << " is not a reciever nor is linked to one" << std::endl;
                                     }else{
                                         // redirecting through link or normal relay
                                         if ((*clientData).link != 0)
                                             clientData = findClientById(clients,(*clientData).link);
                                         (*clientData).socket->send(packet);
-                                        std::cout << "Relaying msg to " << toRead.dest << std::endl;
+                                        std::cerr << "Relaying msg to " << toRead.dest << std::endl;
                                         // send ok to send
                                         toSend.msgType = MSG_OK;
                                         toSend.sender = SERVER_ID;
@@ -174,7 +171,7 @@ int main(){
                                 // try to link to another client
                                 }else if(toRead.msgType == MSG_LINK_REQ){
                                     (*client).link = std::stoi(toRead.content);
-                                    std::cout << "Linked " << (*client).id << " and " << (*client).link << std::endl;
+                                    std::cerr << "Linked " << (*client).id << " and " << (*client).link << std::endl;
                                     toSend.msgType = MSG_OK;
                                     toSend.sender = SERVER_ID;
                                     toSend.dest = (*client).id;
@@ -195,8 +192,8 @@ int main(){
                                     
                                     packet.clear();
                                     packet << toSend;
-                                    std::cout << "Awnsering request to name" << std::endl;
-                                    std::cout << toSend << std::endl;
+                                    std::cerr << "Awnsering request to name" << std::endl;
+                                    std::cerr << toSend << std::endl;
                                     ((*client).socket)->send(packet);
 
                                 }else if(toRead.msgType == MSG_WHOUSER_REQ){
@@ -211,8 +208,8 @@ int main(){
                                     
                                     packet.clear();
                                     packet << toSend;
-                                    std::cout << "Awnsering request to ID" << std::endl;
-                                    std::cout << toSend << std::endl;
+                                    std::cerr << "Awnsering request to ID" << std::endl;
+                                    std::cerr << toSend << std::endl;
                                     ((*client).socket)->send(packet);
                                 }
                             }
@@ -223,7 +220,7 @@ int main(){
                         }
                         else if (status == sf::Socket::Disconnected)
                         {
-                            std::cout << "Disconnecting from " << ((*client).socket)->getRemoteAddress() << std::endl;
+                            std::cerr << "Disconnecting from " << ((*client).socket)->getRemoteAddress() << std::endl;
                             selector.remove(*((*client).socket));
                             delete (*client).socket;
                             client = clients.erase(client);

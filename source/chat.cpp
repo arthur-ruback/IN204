@@ -176,11 +176,9 @@ int Chat::execute(Socket* outbound, std::map<std::string,int> *usernameToId){
                                 std::cout << "Error, message not sent, couldnt get to the client, maybe the name is wrong? Check CAPSLOCK" << std::endl;
                             }else{
                                 (*usernameToId)[whoImTalkingTo] = who;
-                                std::cout << "Pegeui o ID, eh " << (*usernameToId)[whoImTalkingTo] << who << std::endl;
                             }
                         }
 
-                        std::cout << "id from " << whoImTalkingTo << " to send: " << (*usernameToId)[whoImTalkingTo] << std::endl;
                         outbound->send((*usernameToId)[whoImTalkingTo],inputText);
 
                         inputText.clear();
