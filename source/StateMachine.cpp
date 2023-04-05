@@ -33,12 +33,19 @@ void recvThread(std::vector<ButtonChat*> *chats, std::string ip, std::string use
         if (recvMsg.dest == 0)
             globalRun = false;
 
+        std::time_t now = std::time(nullptr);
+        std::tm* timeinfo = std::localtime(&now);
+        std::ostringstream hour;
+        hour << std::setw(2) << std::setfill('0') << timeinfo->tm_hour;
+        std::ostringstream min;
+        min << std::setw(2) << std::setfill('0') << timeinfo->tm_min;
+
         bool foundChat = false;
         // look for chat with specified name
         for (auto i : *chats){
             // chat already exists and add msg
             if(i->getUserName() == idToUsername[recvMsg.sender]) {
-                i->getChat()->addMessage(Message(recvMsg.content, i->getUserName()));
+                i->getChat()->addMessage(Message(recvMsg.content, i->getUserName(),hour.str(),min.str()));
                 foundChat = true;
                 std::cout << "Adding to existing chat:" << i->getUserName() << "\" number " << recvMsg.sender << std::endl;
                 break;
@@ -56,7 +63,7 @@ void recvThread(std::vector<ButtonChat*> *chats, std::string ip, std::string use
                 for (auto i : *chats){
                     // chat already exists and add msg
                     if(i->getUserName() == name) {
-                        i->getChat()->addMessage(Message(recvMsg.content, i->getUserName()));
+                        i->getChat()->addMessage(Message(recvMsg.content, i->getUserName(),hour.str(),min.str()));
                         foundChat = true;
                         std::cout << "Adding to existing chat:" << i->getUserName() << "\" number " << recvMsg.sender << std::endl;
                         idToUsername[recvMsg.sender] = name;
@@ -68,7 +75,7 @@ void recvThread(std::vector<ButtonChat*> *chats, std::string ip, std::string use
                     Chat * newChat = new Chat(std::string(global::pathToFont), name);
                     ButtonChat *newButtonChat = new ButtonChat(NULL, NULL, 0, 0, global::pathToFont, std::string(global::pathToImgs+"profileChat.png"), name, newChat);
                     chats->push_back(newButtonChat);
-                    chats->back()->getChat()->addMessage(Message(recvMsg.content, name));
+                    chats->back()->getChat()->addMessage(Message(recvMsg.content, name,hour.str(),min.str()));
                     std::cout << "Adding to new chat:" << chats->back()->getUserName() << std::endl;
                     idToUsername[recvMsg.sender] = name;
                     usernameToId[name] = recvMsg.sender;
