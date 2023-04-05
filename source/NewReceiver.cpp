@@ -1,7 +1,7 @@
 #include "NewReceiver.hpp"
 
-const int WIDTH_LIMIT = 492;
-const int MAX_CHARACTER = 15;
+const int NEW_RECEIVER_WINDOW_WIDTH = 600;
+const int NEW_RECEIVER_WINDOW_HEIGHT = 350;
 
 NewReceiver::NewReceiver(std::string fontPath, std::string imagesPath) : State(fontPath){
     pathImages = imagesPath;
@@ -13,8 +13,8 @@ int NewReceiver::execute(){
     SDL_Window * windowAdd = SDL_CreateWindow("New Chat",
                             SDL_WINDOWPOS_UNDEFINED,
                             SDL_WINDOWPOS_UNDEFINED,
-                            600, //window_width
-                            350, //window height
+                            NEW_RECEIVER_WINDOW_WIDTH, //window_width
+                            NEW_RECEIVER_WINDOW_HEIGHT, //window height
                             SDL_WINDOW_SHOWN);
 
     SDL_Renderer * rendererAdd = SDL_CreateRenderer(windowAdd, -1, SDL_RENDERER_ACCELERATED);
@@ -24,7 +24,7 @@ int NewReceiver::execute(){
     bool flagRenderText = true;
 
     // BACKGROUND
-    SDL_Rect backgroundRect = {0, 0, 600, 350};
+    SDL_Rect backgroundRect = {0, 0, NEW_RECEIVER_WINDOW_WIDTH, NEW_RECEIVER_WINDOW_HEIGHT};
 
     // TO WHO
     std::string toWho = "To:";
@@ -49,7 +49,7 @@ int NewReceiver::execute(){
                 running = false;
                 break;
             } else if (event.type == SDL_MOUSEBUTTONDOWN) {
-                // Verifique se o botão foi pressionado
+                // Check if the button was pressed
                 int mouseX = event.button.x;
                 int mouseY = event.button.y;
                 SDL_Point mousePoint = {mouseX, mouseY};
@@ -84,7 +84,7 @@ int NewReceiver::execute(){
             } else if (event.type == SDL_TEXTINPUT) {
                 //Not copy or pasting
                 if ( !( SDL_GetModState() & KMOD_CTRL && ( event.text.text[ 0 ] == 'c' || event.text.text[ 0 ] == 'C' || event.text.text[ 0 ] == 'v' || event.text.text[ 0 ] == 'V' ) ) ) {
-                    if (inputText.size() < MAX_CHARACTER){
+                    if (inputText.size() < global::MAX_CHARACTER){
                         //Append character
                         inputText += event.text.text;
                         flagRenderText = true;
@@ -108,7 +108,7 @@ int NewReceiver::execute(){
             SDL_RenderFillRect(rendererAdd, &backgroundRect);
 
             // TO WHO
-            renderText(toWho, 50, 70, fontNormal, WIDTH_LIMIT, rendererAdd);
+            renderText(toWho, 50, 70, fontNormal, global::WIDTH_LIMIT, rendererAdd);
 
             // CONFIRM BUTTON
             confirmButton->draw();
@@ -123,10 +123,10 @@ int NewReceiver::execute(){
             SDL_RenderFillRect(rendererAdd, &nameTextRect);
 
             // NUM MAX CHARACTER
-            renderText(numCharacterText, 300, 180, fontSmall, WIDTH_LIMIT, rendererAdd);
+            renderText(numCharacterText, 300, 180, fontSmall, global::WIDTH_LIMIT, rendererAdd);
 
             // INPUT TEXT
-            renderText(inputText, 65, 140, fontNormal, WIDTH_LIMIT, rendererAdd);
+            renderText(inputText, 65, 140, fontNormal, global::WIDTH_LIMIT, rendererAdd);
             flagRenderText = false;
 
             SDL_RenderPresent(rendererAdd);
@@ -137,7 +137,7 @@ int NewReceiver::execute(){
         receiverName = "";
     }
 
-    // Libere os recursos utilizados pela biblioteca SDL2
+    // Release the resources used by the SDL2 library
     SDL_DestroyRenderer(rendererAdd);
     SDL_DestroyWindow(windowAdd);
     SDL_Quit();

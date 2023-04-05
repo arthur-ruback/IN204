@@ -67,7 +67,7 @@ void Chat::renderMessages(int y) {
                 msgHeight = renderText(it->hour+":"+it->minute, SCREEN_WIDTH - global::SIDE_SPACCING*1.5 - global::FONT_SIZE, y, fontSmall, MAX_MSG_WIDTH, renderer);
                 y += msgHeight + global::V_SPACING;
             }
-        }else{
+        } else{
             y += getHeightText(it->text, MAX_MSG_WIDTH, fontNormal, renderer) + global::V_SPACING + getHeightText(it->hour+":"+it->minute, MAX_MSG_WIDTH, fontSmall, renderer);
         }
     } 
@@ -191,7 +191,7 @@ int Chat::execute(Socket* outbound, std::map<std::string,int> *usernameToId){
                     }
 
                 }
-            }//Special text input event
+            } //Special text input event
             else if( event.type == SDL_TEXTINPUT )
             {
                 //Not copy or pasting
@@ -203,7 +203,7 @@ int Chat::execute(Socket* outbound, std::map<std::string,int> *usernameToId){
                 }
             }
             else if (event.type == SDL_MOUSEBUTTONDOWN){
-                // Verifique se o botão foi pressionado
+                // Check if the button was pressed
                 int mouseX = event.button.x;
                 int mouseY = event.button.y;
                 SDL_Point mousePoint = {mouseX, mouseY};
@@ -221,7 +221,7 @@ int Chat::execute(Socket* outbound, std::map<std::string,int> *usernameToId){
 
             // update scroll
             scrollMessages(yOffset, msgContainer->getTotalHeight(),0);
-            //update textbox size
+            // update textbox size
             TEXT_BOX_HEIGHT = getHeightText(inputText, SCREEN_WIDTH - 2 * global::SIDE_SPACCING, fontNormal, renderer) + 2 * global::V_SPACING;
 
             SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -244,7 +244,7 @@ int Chat::execute(Socket* outbound, std::map<std::string,int> *usernameToId){
             SDL_RenderFillRect( renderer, &rect2 );
             renderText(whoImTalkingTo, global::SIDE_SPACCING*8, global::V_SPACING, fontBig, MAX_MSG_WIDTH, renderer);
 
-            //RETURN BUTTON
+            // RETURN BUTTON
             returnButton.draw();
             
             // show

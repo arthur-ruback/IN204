@@ -15,11 +15,11 @@ class Button{
         SDL_Surface* buttonSurface;
         SDL_Texture* buttonTexture;
         SDL_Rect buttonRect;
+        std::string pathImages;
         int buttonWidth;
         int buttonHeight;
     
     public:
-        std::string pathImages;
         
         Button(SDL_Window * windows, SDL_Renderer * renderer, int x, int y, std::string fontPath, std::string imagesPath);
         virtual ~Button();
