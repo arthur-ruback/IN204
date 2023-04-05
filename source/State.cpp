@@ -26,7 +26,7 @@ State::State(std::string fontPath){
     fontBig = TTF_OpenFont(fontPath.c_str(), (int)global::FONT_SIZE*1.5);
     if (fontBig == nullptr)
         logSDLError("TTF_OpenFont");
-    nameUser = "";
+    receiverName = "";
 }
 
 State::~State(){
@@ -34,10 +34,18 @@ State::~State(){
     SDL_Quit();
 }
 
-std::string State::getNameUser(){
-    return nameUser;
+std::string State::getReceiverName(){
+    return receiverName;
 }
 
-void State::setNameUser(std::string newName){
-    nameUser = newName;
+void State::setReceiverName(std::string newName){
+    receiverName = newName;
+}
+
+std::string State::getUserName(){
+    return userName;
+}
+
+void State::setUserName(std::string newName){
+    userName = newName;
 }

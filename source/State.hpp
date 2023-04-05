@@ -14,8 +14,10 @@ class State{
         State(std::string fontPath);
         virtual ~State();
         virtual int execute() = 0;
-        std::string getNameUser();
-        void setNameUser(std::string newName);
+        std::string getReceiverName();
+        void setReceiverName(std::string newName);
+        std::string getUserName();
+        void setUserName(std::string newName);
 
     protected:
         int SCREEN_WIDTH;
@@ -28,7 +30,8 @@ class State{
         TTF_Font* fontSmall;
         TTF_Font* fontBig;
         SDL_Color textColor;
-        std::string nameUser;
+        std::string receiverName;
+        std::string userName;
 };
 
 

@@ -1,16 +1,18 @@
-#include "NewReceiver.hpp"
+#include "Login.hpp"
 
 const int WIDTH_LIMIT = 492;
 const int MAX_CHARACTER = 15;
 
-NewReceiver::NewReceiver(std::string fontPath, std::string imagesPath) : State(fontPath){
+Login::Login(std::string fontPath, std::string imagesPath) : State(fontPath){
     pathImages = imagesPath;
 }
 
-NewReceiver::~NewReceiver(){}
+Login::~Login(){
 
-int NewReceiver::execute(){
-    SDL_Window * windowAdd = SDL_CreateWindow("New Chat",
+}
+
+int Login::execute(){
+    SDL_Window * windowAdd = SDL_CreateWindow("Login",
                             SDL_WINDOWPOS_UNDEFINED,
                             SDL_WINDOWPOS_UNDEFINED,
                             600, //window_width
@@ -26,26 +28,22 @@ int NewReceiver::execute(){
     // BACKGROUND
     SDL_Rect backgroundRect = {0, 0, 600, 350};
 
-    // TO WHO
-    std::string toWho = "To:";
+    // LOGIN NAME
+    std::string loginWho = "Login:";
 
     // NAME TEXT
     SDL_Rect edgeRect = {55, 115, 500, 64};
     SDL_Rect nameTextRect = {59, 119, 492, 56};
 
-    // CONFIRM BUTTON
-    Button * confirmButton = new Button(windowAdd, rendererAdd, 350, 250, global::pathToFont, std::string(pathImages+"confirmButton.png").c_str());
-    SDL_Rect confirmButtonRect = confirmButton->getButtonRect();
-
-    // CANCEL BUTTON
-    Button * cancelButton = new Button(windowAdd, rendererAdd, 90, 250, global::pathToFont, std::string(pathImages+"cancelButton.png").c_str());
-    SDL_Rect cancelButtonRect = cancelButton->getButtonRect();
+    // ENTER BUTTON
+    Button * enterButton = new Button(windowAdd, rendererAdd, 200, 250, global::pathToFont, std::string(pathImages+"enterButton.png").c_str());
+    SDL_Rect enterButtonRect = enterButton->getButtonRect();
 
     while (running){
         SDL_Event event;
         while (SDL_PollEvent(&event)){
             if (event.type == SDL_QUIT){
-                confirmNewChat = false;
+                confirmLogin = false;
                 running = false;
                 break;
             } else if (event.type == SDL_MOUSEBUTTONDOWN) {
@@ -53,16 +51,12 @@ int NewReceiver::execute(){
                 int mouseX = event.button.x;
                 int mouseY = event.button.y;
                 SDL_Point mousePoint = {mouseX, mouseY};
-                // Confirm Button
-                if (SDL_PointInRect(&mousePoint, &confirmButtonRect)) {
+                // Enter Button
+                if (SDL_PointInRect(&mousePoint, &enterButtonRect)) {
                     if (inputText.size() != 0){
-                        confirmNewChat = true;
+                        confirmLogin = true;
                         running = false;
                     }
-                // Cancel Button
-                }else if (SDL_PointInRect(&mousePoint, &cancelButtonRect)) {
-                    confirmNewChat = false;
-                    running = false;
                 }
                 break;
             } else if (event.type == SDL_KEYDOWN) {
@@ -75,7 +69,7 @@ int NewReceiver::execute(){
                 //Handle enter
                 else if( event.key.keysym.sym == SDLK_RETURN) {
                     if(inputText.size() != 0) {
-                        confirmNewChat = true;
+                        confirmLogin = true;
                         running = false;
                         flagRenderText = true;
                     }
@@ -98,7 +92,7 @@ int NewReceiver::execute(){
         std::string numCharacterText = "Number of characters: ";
         numCharacterText += std::to_string(inputText.size());
         numCharacterText += "/15";
-        receiverName = inputText;
+        userName = inputText;
         
         if(flagRenderText){
             SDL_RenderClear(rendererAdd);
@@ -108,13 +102,10 @@ int NewReceiver::execute(){
             SDL_RenderFillRect(rendererAdd, &backgroundRect);
 
             // TO WHO
-            renderText(toWho, 50, 70, fontNormal, WIDTH_LIMIT, rendererAdd);
+            renderText(loginWho, 50, 70, fontNormal, WIDTH_LIMIT, rendererAdd);
 
             // CONFIRM BUTTON
-            confirmButton->draw();
-
-            // CANCEL BUTTON
-            cancelButton->draw();
+            enterButton->draw();
 
             // NAME TEXT
             SDL_SetRenderDrawColor(rendererAdd, 0, 0, 0, 255);
@@ -123,7 +114,7 @@ int NewReceiver::execute(){
             SDL_RenderFillRect(rendererAdd, &nameTextRect);
 
             // NUM MAX CHARACTER
-            renderText(numCharacterText, 300, 180, fontSmall, WIDTH_LIMIT, rendererAdd);
+            renderText(numCharacterText, 355, 180, fontSmall, WIDTH_LIMIT, rendererAdd);
 
             // INPUT TEXT
             renderText(inputText, 65, 140, fontNormal, WIDTH_LIMIT, rendererAdd);
@@ -133,8 +124,8 @@ int NewReceiver::execute(){
         }    
     }
 
-    if (!confirmNewChat){
-        receiverName = "";
+    if (!confirmLogin){
+        userName = "";
     }
 
     // Libere os recursos utilizados pela biblioteca SDL2
@@ -142,6 +133,11 @@ int NewReceiver::execute(){
     SDL_DestroyWindow(windowAdd);
     SDL_Quit();
 
-    return global::MAINMENU;
-
+    if (!confirmLogin){
+        userName = "";
+        exit(0);
+    } else{
+        return global::MAINMENU;
+    }
+    
 }

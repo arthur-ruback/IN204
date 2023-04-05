@@ -20,6 +20,7 @@ namespace global{
     const int CHAT = 2;
     const int NEWRECEIVER = 3;
     const int MAKENEWCHAT = 4;
+    const int LOGIN = 5;
     const std::string pathToFont = "source/fonts/arial.ttf";
     const std::string pathToImgs = "source/images/";
 }
