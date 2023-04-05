@@ -23,7 +23,7 @@ ClientData* findClientById(std::list<ClientData> &clients, int id){
 int main(){
     sf::TcpListener listener;
 
-    if (listener.listen(53001) != sf::Socket::Done)
+    if (listener.listen(SERVERPORT) != sf::Socket::Done)
     {
         std::cerr << "Failed in binding to port" << std::endl;
         return -1;

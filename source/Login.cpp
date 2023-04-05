@@ -124,6 +124,8 @@ int Login::execute(){
         }    
     }
 
+    DEBUG("confirm login", confirmLogin);
+
     if (!confirmLogin){
         userName = "";
     }
@@ -133,10 +135,14 @@ int Login::execute(){
     SDL_DestroyWindow(windowAdd);
     SDL_Quit();
 
+    DEBUG("at the end of login, username = ", userName);
+
     if (!confirmLogin){
         userName = "";
-        exit(0);
+        DEBUG("retirnando die");
+        return global::DIE;
     } else{
+        DEBUG("retirnando mainmenu");
         return global::MAINMENU;
     }
     

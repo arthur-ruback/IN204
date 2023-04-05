@@ -38,6 +38,9 @@ Socket::Socket(std::string ip, unsigned port, unsigned myID, int type, unsigned 
     } else {
         std::cout << "Invalid socket, no operation will be made" << std::endl;
     }
+
+    if(myType == RECIEVER)
+        socket.setBlocking(false);
 }
 
 Socket::~Socket(){
@@ -75,11 +78,43 @@ int Socket::send(unsigned destID, std::string msg){
 }
 
 MessageNet Socket::recv(){
+    sf::Socket::Status status;
+
+    if(!validSocket){
+        std::cout << "Invalid socket, no operation will be made" << std::endl;
+        return MessageNet();
+    }
+
     if(myType != RECIEVER){
         std::cout << "Operation forbidden in this type os socket" << std::endl;
         return MessageNet();
     }
-    socket.receive(toRecv);
-    toRecv >> recvMsg;
-    return recvMsg;
+    
+    socket.setBlocking(false);
+    std::cout << "Joining receive loop" << std::endl;
+    while(true){
+        status = socket.receive(toRecv);
+        // treat partial receive or disconect
+        if(status ==sf::Socket::Done){
+            toRecv >> recvMsg;
+            std::cout << "received full:" << recvMsg << std::endl;
+            return recvMsg;
+        } else if(status ==sf::Socket::Partial){
+        //TODO: treat partial
+            toRecv >> recvMsg;
+            std::cout << "received partial:" << recvMsg << std::endl;
+            return recvMsg;
+        } else if(status ==sf::Socket::Disconnected){
+            std::cout << "Disconected" << std::endl;
+            return MessageNet();
+        } else if(status ==sf::Socket::Error){
+            std::cout << "Error" << std::endl;
+            return MessageNet();
+        } else {
+        }
+    sf::sleep(sf::milliseconds(500));
+    }
+
+    
+    
 }

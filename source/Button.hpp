@@ -15,6 +15,8 @@ class Button{
         SDL_Surface* buttonSurface;
         SDL_Texture* buttonTexture;
         SDL_Rect buttonRect;
+        int buttonWidth;
+        int buttonHeight;
     
     public:
         std::string pathImages;
@@ -23,6 +25,7 @@ class Button{
         virtual ~Button();
         void draw();
         void setWindowRenderer(SDL_Window * newWindow, SDL_Renderer * newRen, SDL_Texture* newTexture);
+        void setPosition(int x, int y);
         SDL_Rect getButtonRect();
         SDL_Texture* getTexture();
 };

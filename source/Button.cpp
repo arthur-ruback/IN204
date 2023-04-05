@@ -16,8 +16,8 @@ Button::Button(SDL_Window * windows, SDL_Renderer * renderer, int x, int y, std:
     ren = renderer;
     buttonSurface = IMG_Load(imagePath.c_str());
     buttonTexture = SDL_CreateTextureFromSurface(ren, buttonSurface);
-    int buttonWidth = buttonSurface->w;
-    int buttonHeight = buttonSurface->h;
+    buttonWidth = buttonSurface->w;
+    buttonHeight = buttonSurface->h;
     buttonRect = { x, y, buttonWidth, buttonHeight };
     SDL_FreeSurface(buttonSurface);
 }
@@ -34,6 +34,10 @@ void Button::setWindowRenderer(SDL_Window * newWindow, SDL_Renderer * newRen, SD
     win = newWindow;
     ren = newRen;
     buttonTexture = newTexture;
+}
+
+void Button::setPosition(int x, int y){
+    buttonRect = { x, y, buttonWidth, buttonHeight };
 }
 
 SDL_Rect Button::getButtonRect(){

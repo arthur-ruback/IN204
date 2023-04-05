@@ -45,6 +45,10 @@ namespace debugging
 #define EMITTER 0
 #define RECIEVER 1
 
+#define NOIDYET 65565
+
+#define SERVERPORT 53001
+
 struct ClientData {
     sf::TcpSocket* socket;
     unsigned id;

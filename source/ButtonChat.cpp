@@ -24,3 +24,7 @@ void ButtonChat::draw(){
 Chat* ButtonChat::getChat(){
     return chat;
 }
+
+std::string ButtonChat::getUserName(){
+    return userName;
+}

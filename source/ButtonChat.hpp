@@ -14,6 +14,7 @@ class ButtonChat : public Button{
         ~ButtonChat();
         void draw();
         Chat *getChat();
+        std::string getUserName();
         
 };
 

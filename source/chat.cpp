@@ -94,6 +94,7 @@ int Chat::execute(){
     SDL_Event event;
     int yOffset = 0;
     std::string inputText = "> ";
+    unsigned lastRender = SDL_GetTicks();
 
     Window = SDL_CreateWindow("Chat", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (Window == nullptr)
@@ -199,7 +200,7 @@ int Chat::execute(){
             }
         }
 
-        if(flagRenderText){
+        if(flagRenderText || lastRender+100 < SDL_GetTicks()){
 
             // update scroll
             scrollMessages(yOffset, msgContainer->getTotalHeight(),0);
@@ -232,6 +233,7 @@ int Chat::execute(){
             // show
             SDL_RenderPresent(renderer);
             flagRenderText = false;
+            lastRender = SDL_GetTicks();
         }
         SDL_Delay( 50 );
     }

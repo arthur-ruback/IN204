@@ -16,6 +16,7 @@ namespace global{
     const int V_SPACING = 5;
     const int INIT_TEXT_BOX_HEIGHT = FONT_SIZE + 2 * V_SPACING;
     const int HEADER_HEIGHT = 1.7*FONT_SIZE + 2 * V_SPACING;
+    const int DIE = 0;
     const int MAINMENU = 1;
     const int CHAT = 2;
     const int NEWRECEIVER = 3;

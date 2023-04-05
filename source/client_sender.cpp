@@ -8,7 +8,7 @@
 
 int main()
 {
-    Socket socket("127.0.0.1", 53001, 1, EMITTER);
+    Socket socket("127.0.0.1", SERVERPORT, 1, EMITTER);
     int aux;
     while (true)
     {

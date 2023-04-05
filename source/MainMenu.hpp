@@ -24,7 +24,7 @@ class MainMenu : public State{
         MainMenu(std::vector<ButtonChat*> *_chats,std::string fontPath, std::string imagesPath);
         virtual ~MainMenu();
         void addNewChat(SDL_Window * window, SDL_Renderer * ren);
-        void updateChats(SDL_Window * window, SDL_Renderer * ren, SDL_Texture* buttonTexture);
+        void updateChats(SDL_Window * window, SDL_Renderer * ren, SDL_Texture* buttonTexture, int x, int y);
         int execute();
         Chat * getChatSelected();
 };
