@@ -22,6 +22,14 @@ namespace global{
     const int NEWRECEIVER = 3;
     const int MAKENEWCHAT = 4;
     const int LOGIN = 5;
+    const int WIDTH_LIMIT = 492;
+    const int MAX_CHARACTER = 15;
+    const int LOGIN_WINDOW_WIDTH = 600;
+    const int LOGIN_WINDOW_HEIGHT = 350;
+    const int MAIN_WINDOW_WIDTH = 563;
+    const int MAIN_WINDOW_HEIGHT = 844;
+    const int NEW_RECEIVER_WINDOW_WIDTH = 600;
+    const int NEW_RECEIVER_WINDOW_HEIGHT = 350;
     const std::string pathToFont = "source/fonts/arial.ttf";
     const std::string pathToImgs = "source/images/";
 }
