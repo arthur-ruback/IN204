@@ -23,7 +23,7 @@ git clone https://github.com/arthur-ruback/IN204.git
 This project was developed and tested on Ubuntu 22.04. To install the dependencies on Linux, use the following commands:
 
 ```bash
-sudo apt-get install dependencies.txt -f
+sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsfml-dev cmake make
 ```
 
 ## Compilation
